@@ -1,0 +1,9 @@
+Using HLAPI
+
+Works okay (but not perfect)
+
+0 interpolation/extrapolation
+maximum networktransform sync rate
+reliable-sequenced
+lerp art to where it thinks it should be
+
