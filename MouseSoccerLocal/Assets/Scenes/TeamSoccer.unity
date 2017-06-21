@@ -462,8 +462,8 @@ MonoBehaviour:
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
-  time_limit: 5
-  input_delay_per_round: f401000000000000c8000000e803000000000000
+  time_limit: 120
+  input_delay_per_round: 00000000000000002c0100006400000000000000
   text_file_name: TeamSoccerResults.txt
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}
@@ -4690,7 +4690,7 @@ GameObject:
   - component: {fileID: 1276073949}
   - component: {fileID: 1276073948}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: GoalConfetti
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4749,7 +4749,7 @@ ParticleSystemRenderer:
   m_MaxParticleSize: 0.5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: 5
+  m_LengthScale: 1
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_RenderAlignment: 0
@@ -4815,7 +4815,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 307432239
+  randomSeed: 2035669380
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -8487,7 +8487,7 @@ ParticleSystemRenderer:
   m_MaxParticleSize: 0.5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: 5
+  m_LengthScale: 1
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_RenderAlignment: 0
@@ -8553,7 +8553,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -207723161
+  randomSeed: -1506194741
   InitialModule:
     serializedVersion: 3
     enabled: 1

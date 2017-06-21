@@ -146,6 +146,10 @@ public class SingleMouseMovement : MonoBehaviour
         {
             Debug.Log("Kick " + cur_input.magnitude);
             ball_physics.AddForce(cur_input * kick_force_multiplier);
+
+            // Change colour of ball trail
+            collision.gameObject.GetComponent<TrailRenderer>().startColor = player.team_colour;
+            collision.gameObject.GetComponent<TrailRenderer>().endColor = player.team_colour;
         }
 
         // If kick effect was big, make noise and effect

@@ -71,11 +71,13 @@ public class ScoreManager : MonoBehaviour
         if (red_players > blue_players)
         {
             new_player.GetComponent<Player>().team = Team.Blue;
+            new_player.GetComponent<Player>().team_colour = Color.blue;
             blue_players++;
         }
         else
         {
             new_player.GetComponent<Player>().team = Team.Red;
+            new_player.GetComponent<Player>().team_colour = Color.red;
             red_players++;
         }
     }
@@ -149,7 +151,7 @@ public class ScoreManager : MonoBehaviour
 
 
         if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 
     float deltaTime = 0.0f; // Used for non-fixed framerate

@@ -28,12 +28,12 @@ public static class GlobalSettings
     public const int ms_per_second = 1000;
 }
 
+
 public class LocalSettings : MonoBehaviour 
 {
 	void Start () 
 	{
         //QualitySettings.vSyncCount = 1;    // Limits it to ~60fps
-        Debug.Log(QualitySettings.vSyncCount);
         Application.targetFrameRate = 120;
         Debug.Log("Setting frame rate to: " + Application.targetFrameRate + ", and vSync to: " + QualitySettings.vSyncCount);
     }

@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Team team;
+    public Color team_colour;
     public IDevice input;
 
 

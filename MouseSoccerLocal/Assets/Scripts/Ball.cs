@@ -31,6 +31,9 @@ public class Ball : MonoBehaviour
         this.GetComponent<TrailRenderer>().Clear();
         physics.velocity = Vector2.zero;
         this.transform.position = position;
+
+        GetComponent<TrailRenderer>().startColor = Color.white;
+        GetComponent<TrailRenderer>().endColor = Color.white;
     }
 
 
@@ -57,6 +60,12 @@ public class Ball : MonoBehaviour
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+    }
+
+
+    public void BallTouched(Player p)
+    {
+
     }
 
 
