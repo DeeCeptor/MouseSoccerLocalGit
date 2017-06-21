@@ -133,7 +133,8 @@ public class SingleMouseMovement : MonoBehaviour
     {
         number_of_kicks++;
 
-        Rigidbody2D ball_physics = collision.gameObject.GetComponent<Rigidbody2D>();
+        //Rigidbody2D ball_physics = collision.gameObject.GetComponent<Rigidbody2D>();
+        Rigidbody2D ball_physics = Ball.ball.physics;
 
         // We've been sitting still for a bit, stop the ball where it is (soccer player takes control of the ball)
         if (sitting_still_for_frames >= sitting_Still_needed_to_stop_ball)
@@ -148,8 +149,14 @@ public class SingleMouseMovement : MonoBehaviour
             ball_physics.AddForce(cur_input * kick_force_multiplier);
 
             // Change colour of ball trail
-            collision.gameObject.GetComponent<TrailRenderer>().startColor = player.team_colour;
-            collision.gameObject.GetComponent<TrailRenderer>().endColor = player.team_colour;
+            //collision.gameObject.GetComponent<TrailRenderer>().startColor = player.team_colour;
+            //collision.gameObject.GetComponent<TrailRenderer>().endColor = player.team_colour;
+            if (Ball.ball.line_renderer.startColor != player.team_colour)
+            {
+                // Change trail colour if it doesn't match the current player
+                Ball.ball.line_renderer.startColor = player.team_colour;
+                Ball.ball.line_renderer.endColor = player.team_colour;
+            }
         }
 
         // If kick effect was big, make noise and effect

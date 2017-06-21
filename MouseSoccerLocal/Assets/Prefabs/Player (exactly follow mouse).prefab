@@ -40,7 +40,7 @@ Transform:
   m_GameObject: {fileID: 1291690514366434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.6183319, y: 1.2606163, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  team_colour: {r: 0, g: 0, b: 0, a: 0}
 --- !u!212 &212211591354241626
 SpriteRenderer:
   m_ObjectHideFlags: 1

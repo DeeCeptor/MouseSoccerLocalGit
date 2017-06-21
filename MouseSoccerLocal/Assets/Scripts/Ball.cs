@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour
 
     public Rigidbody2D physics;
     Animator anim;
+    public LineRenderer line_renderer;
 
     [SerializeField]
     private float max_speed = 20f;
@@ -19,7 +20,9 @@ public class Ball : MonoBehaviour
         ball = this;
         physics = this.GetComponent<Rigidbody2D>();
         //anim = this.GetComponent<Animator>();
-	}
+        line_renderer = this.GetComponent<LineRenderer>();
+
+    }
     private void Start()
     {
 
@@ -30,6 +33,7 @@ public class Ball : MonoBehaviour
     {
         this.GetComponent<TrailRenderer>().Clear();
         physics.velocity = Vector2.zero;
+        physics.angularVelocity = 0;
         this.transform.position = position;
 
         GetComponent<TrailRenderer>().startColor = Color.white;
