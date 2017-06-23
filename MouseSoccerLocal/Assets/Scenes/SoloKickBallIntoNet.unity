@@ -464,6 +464,7 @@ MonoBehaviour:
   enforce_time_limit: 1
   time_limit: 2
   input_delay_per_round: 0000000000000000000000000000000000000000
+  text_file_name: Results.txt
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}
   position_to_spawn_ball: {fileID: 1453924742}
@@ -7725,10 +7726,6 @@ Prefab:
     - target: {fileID: 4172997363535758, guid: 7ce583f8a4838394ab50dd545db1087d, type: 2}
       propertyPath: m_RootOrder
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1041639206299370, guid: 7ce583f8a4838394ab50dd545db1087d, type: 2}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7ce583f8a4838394ab50dd545db1087d, type: 2}

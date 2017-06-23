@@ -2,12 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class Player : MonoBehaviour
 {
     public Team team;
     public Color team_colour;
     public IDevice input;
+
+    Text player_label;
 
 
 	void Awake ()
@@ -19,5 +23,18 @@ public class Player : MonoBehaviour
     {
         ScoreManager.score_manager.AssignTeam(this.gameObject);
         ScoreManager.score_manager.SetPlayerColours(team, this.gameObject);
+
+        player_label = Instantiate((Resources.Load("Player Label") as GameObject)).GetComponent<Text>();
+        player_label.text = this.transform.name + "\n\n\n ";
+        player_label.transform.name = "Player " + this.transform.name + " label";
+        player_label.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+        player_label.transform.localScale = Vector3.one;
+    }
+
+
+    private void Update()
+    {
+        // Update position of UI label above player
+        player_label.transform.position = this.transform.position;
     }
 }

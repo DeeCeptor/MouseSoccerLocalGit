@@ -9,19 +9,20 @@ public class Ball : MonoBehaviour
 
     public Rigidbody2D physics;
     Animator anim;
-    public LineRenderer line_renderer;
+    public TrailRenderer trail;
 
     [SerializeField]
     private float max_speed = 20f;
 
+    Collider2D collider;
 
 	void Awake () 
 	{
         ball = this;
         physics = this.GetComponent<Rigidbody2D>();
         //anim = this.GetComponent<Animator>();
-        line_renderer = this.GetComponent<LineRenderer>();
-
+        trail = this.GetComponent<TrailRenderer>();
+        collider = this.GetComponent<Collider2D>();
     }
     private void Start()
     {
@@ -38,6 +39,12 @@ public class Ball : MonoBehaviour
 
         GetComponent<TrailRenderer>().startColor = Color.white;
         GetComponent<TrailRenderer>().endColor = Color.white;
+    }
+
+
+    public void SetCollisions(bool enabled_)
+    {
+        collider.enabled = enabled_;
     }
 
 

@@ -144,6 +144,31 @@ public class TeamSoccer : Trial
 
         // Reset ball position
         Ball.ball.Reset(Vector2.zero);
+
+        // Disable collisions with the ball
+        Ball.ball.SetCollisions(false);
+
+        StartCoroutine(WaitAfterGoal());
+    }
+    IEnumerator WaitAfterGoal()
+    {
+        float time_countdown = 2.0f;
+        timer_text.gameObject.SetActive(true);
+        int prev_time = 0;
+        while (time_countdown > 0)
+        {
+            time_countdown -= Time.deltaTime;
+
+            int new_time = (int)time_countdown + 1;
+            timer_text.text = "" + new_time;
+            if (new_time != prev_time)
+                timer_beeps.Play();
+            prev_time = new_time;
+            yield return null;
+        }
+        timer_text.gameObject.SetActive(false);
+
+        Ball.ball.SetCollisions(true);
     }
 
 

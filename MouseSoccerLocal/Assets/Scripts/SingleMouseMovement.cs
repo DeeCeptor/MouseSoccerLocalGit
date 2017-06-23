@@ -151,11 +151,11 @@ public class SingleMouseMovement : MonoBehaviour
             // Change colour of ball trail
             //collision.gameObject.GetComponent<TrailRenderer>().startColor = player.team_colour;
             //collision.gameObject.GetComponent<TrailRenderer>().endColor = player.team_colour;
-            if (Ball.ball.line_renderer.startColor != player.team_colour)
+            if (Ball.ball.trail.startColor != player.team_colour)
             {
                 // Change trail colour if it doesn't match the current player
-                Ball.ball.line_renderer.startColor = player.team_colour;
-                Ball.ball.line_renderer.endColor = player.team_colour;
+                Ball.ball.trail.startColor = player.team_colour;
+                Ball.ball.trail.endColor = player.team_colour;
             }
         }
 

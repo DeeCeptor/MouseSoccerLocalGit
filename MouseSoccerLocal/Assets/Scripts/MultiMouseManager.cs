@@ -67,6 +67,7 @@ public class MultiMouseManager : MonoBehaviour
 
         // Join a player
         GameObject go = (GameObject)(Instantiate(player_prefab));
+        go.transform.name = "" + joined_devices.Count;
         go.GetComponent<Player>().input = device;
     }
 
