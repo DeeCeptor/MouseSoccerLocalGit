@@ -38,6 +38,8 @@ public class Trial : MonoBehaviour
     public AudioSource timer_beeps;
     public AudioSource start_beep;
 
+    public bool to_menu_after_trial = false;
+
 
     public virtual void Awake()
     {
@@ -110,8 +112,12 @@ public class Trial : MonoBehaviour
         // Reset everything
         ResetTrial();
 
+        round_running = false;
         trial_running = false;
         Debug.Log("Finished trial");
+
+        if (to_menu_after_trial)
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 	
 
@@ -166,4 +172,17 @@ public class Trial : MonoBehaviour
                 StartTrial();
         }
 	}
+
+
+    Rect gui_rect = new Rect(Screen.width - 200, Screen.height - 50, 200, 50);
+    private void OnGUI()
+    {
+        if (!trial_running)
+            return;
+        string display_string = "";
+        display_string += "Round: " + current_round;
+        if (enforce_time_limit)
+            display_string += "\nTime remaining: " + (time_limit - time_for_current_round);
+        GUI.Label(gui_rect, display_string);
+    }
 }

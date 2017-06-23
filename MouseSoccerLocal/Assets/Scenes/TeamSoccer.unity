@@ -4623,7 +4623,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LogLevel: 2
   UseFixedUpdate: 1
-  LifetimeManagement: 1
+  LifetimeManagement: 0
   DeviceStateChanged:
     m_PersistentCalls:
       m_Calls: []

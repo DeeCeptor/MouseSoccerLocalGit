@@ -120,7 +120,6 @@ public class TeamSoccer : Trial
 
     public override void FinishTrial()
     {
-        base.FinishTrial();
         ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().ResetKicks();
 
         // Record our findings in a text file
@@ -129,6 +128,8 @@ public class TeamSoccer : Trial
         round_results.Clear();
         trial_running = false;
         round_running = false;
+
+        base.FinishTrial();
     }
 
 
@@ -168,6 +169,7 @@ public class TeamSoccer : Trial
         }
         timer_text.gameObject.SetActive(false);
 
+        start_beep.Play();
         Ball.ball.SetCollisions(true);
     }
 
@@ -186,18 +188,5 @@ public class TeamSoccer : Trial
         {
             round_timer.text = "" + (int) (time_limit - time_for_current_round);
         }
-    }
-
-
-    Rect gui_rect = new Rect(Screen.width - 200, Screen.height - 50, 200, 50);
-    private void OnGUI()
-    {
-        if (!trial_running)
-            return;
-        string display_string = "";
-        display_string += "Round: " + current_round;
-        if (enforce_time_limit)
-            display_string += "\nTime remaining: " + (time_limit - time_for_current_round);
-        GUI.Label(gui_rect, display_string);
     }
 }
