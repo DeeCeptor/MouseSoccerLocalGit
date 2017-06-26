@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class Round_Record
 {
-    public int number_of_players;
+    public int trial_id;     // What task are we doing?
+    public int participant_id;
+    public int round_number;
     public int ms_input_lag_of_round;
+    public float round_time_taken = 0;
 
     public virtual new string ToString()
     {
-        return ms_input_lag_of_round + "ms" + ",players:" + number_of_players;
+        return trial_id + "," + participant_id + "," + round_number + "," + ms_input_lag_of_round + "," + round_time_taken;
+    }
+    public virtual string FieldNames()
+    {
+        return "trial_id,participant_id,round_number,input_lag(ms),time_for_round(ms)";
     }
 }
 
@@ -22,6 +29,7 @@ public class Trial : MonoBehaviour
 
     public List<Round_Record> round_results = new List<Round_Record>();
 
+    public int trial_id = 0;    // What task are we doing? Stationary kick into net is 1, moving kick into net is 2, etc
     public int current_round = -1;   // Current round
     public int total_rounds = 0;    // How many rounds are we aiming for?
     public float time_for_current_round;    // In seconds, elapsed time of current trial
@@ -83,6 +91,9 @@ public class Trial : MonoBehaviour
 
     public virtual void NextRound()
     {
+        if (current_round >= 0)
+            FinishRound();
+
         ResetBetweenRounds();
 
         current_round++;
@@ -95,6 +106,13 @@ public class Trial : MonoBehaviour
             FinishTrial();
         }
     }
+    // Record anything we need to before resetting
+    public virtual void FinishRound()
+    {
+        round_results[current_round].round_time_taken = time_for_current_round;
+        round_results[current_round].round_number = current_round + 1;
+        round_results[current_round].trial_id = trial_id;
+    }
 
 
     public virtual void ResetBetweenRounds()
@@ -106,9 +124,6 @@ public class Trial : MonoBehaviour
     
     public virtual void FinishTrial()
     {
-        // Record some stuff
-
-
         // Reset everything
         ResetTrial();
 
@@ -137,15 +152,24 @@ public class Trial : MonoBehaviour
     public void CreateTextFile()
     {
         string[] results = new string[round_results.Count];
-
         for (int x = 0; x < round_results.Count; x++)
         {
             results[x] = round_results[x].ToString();
         }
         string path = Application.dataPath + "/" + text_file_name;    // Application.persistentDataPath
-        string text = string.Join(Environment.NewLine, results);
+
+        string text = "";
+
+        // If file doesn't exist, add the header line
+        if (!System.IO.File.Exists(path))
+            text = round_results[0].FieldNames() + "\n" + text;  // Top line contains column names
+        else
+            text += "\n";
+
+        text += string.Join(Environment.NewLine, results);
+        // Append results onto end of file
         Debug.Log("Saving results to: " + path + ", " + text, this.gameObject);
-        System.IO.File.WriteAllText(path, text);
+        System.IO.File.AppendAllText(path, text);
     }
 
 

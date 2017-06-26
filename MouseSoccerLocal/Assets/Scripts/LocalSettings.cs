@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +27,23 @@ public static class GlobalSettings
 
     public const int input_delay_increment = 10;
     public const int ms_per_second = 1000;
+
+    public static int[] participant_ids = new int[8];
+
+
+    // Returns true if a valid participant ID has been set for this player number
+    public static bool ValidParticipantID(int player_num)
+    {
+        return participant_ids != null && participant_ids.Length >= player_num ? true : false;
+    }
+    // Returns a participant ID. Returns -1 if no ID was found
+    public static int GetParticipantId(int player_num)
+    {
+        if (participant_ids != null && participant_ids.Length >= player_num)
+            return participant_ids[player_num];
+        else
+            return -1;
+    }
 }
 
 
@@ -40,6 +58,9 @@ public class LocalSettings : MonoBehaviour
 
     void Update()
     {
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Menu")
+            return;
+
         //Debug.Log(Application.targetFrameRate + " " + QualitySettings.vSyncCount);
         if (Input.GetKeyDown(KeyCode.Equals))
         {

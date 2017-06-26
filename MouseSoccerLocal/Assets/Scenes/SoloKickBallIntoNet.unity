@@ -395,8 +395,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 379369205}
-  - component: {fileID: 379369206}
   - component: {fileID: 379369207}
+  - component: {fileID: 379369206}
   m_Layer: 0
   m_Name: ScoreManager
   m_TagString: Untagged
@@ -455,6 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaf7788be85a1194da3fb6cab13cf8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trial_id: 2
   current_round: -1
   total_rounds: 10
   time_for_current_round: 0
@@ -463,7 +464,7 @@ MonoBehaviour:
   round_running: 0
   enforce_time_limit: 1
   time_limit: 2
-  input_delay_per_round: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  input_delay_per_round: 00000000000000006400000000000000000000003200000000000000190000000a00000000000000
   text_file_name: SoloKickBallIntoNet.txt
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}

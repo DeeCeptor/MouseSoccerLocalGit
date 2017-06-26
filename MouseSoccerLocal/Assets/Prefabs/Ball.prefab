@@ -181,7 +181,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physics: {fileID: 0}
-  max_speed: 20
+  trail: {fileID: 0}
+  max_speed: 22
 --- !u!212 &212548106821364636
 SpriteRenderer:
   m_ObjectHideFlags: 1

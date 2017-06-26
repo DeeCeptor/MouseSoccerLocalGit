@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public Team team;
     public Color team_colour;
     public IDevice input;
+    public int player_id;
 
     Text player_label;
 

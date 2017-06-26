@@ -18,7 +18,11 @@ public class TeamSoccerRecord : Round_Record
 
     public override string ToString()
     {
-        return blue_score + "," + red_score + "," + base.ToString();
+        return base.ToString() + "," + blue_score + "," + red_score;
+    }
+    public override string FieldNames()
+    {
+        return base.FieldNames() + ",blue_score,red_score";
     }
 }
 
@@ -68,8 +72,9 @@ public class TeamSoccer : Trial
         ScoreManager.score_manager.EnablePlayerCollisions(false);
 
         // Get input lag for current round
+        // Will need a bunch of participant ID's for this one
+        current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
         current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
-        current_round_record.number_of_players = ScoreManager.score_manager.players.Count;
 
         // Put player in correct spot
         //ScoreManager.score_manager.players[0].transform.position = position_to_spawn_player.transform.position;
