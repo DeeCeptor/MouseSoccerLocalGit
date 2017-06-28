@@ -1,3 +1,0 @@
-trial_id,participant_id,round_number,input_lag(ms),time_for_round(ms),scored1,11,1,0,3.004358,False
-1,11,2,100,3.011729,False
-1,11,3,0,3.001284,False

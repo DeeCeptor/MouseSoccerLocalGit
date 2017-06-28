@@ -29,6 +29,8 @@ public class SingleMouseMovement : MonoBehaviour
     public bool disable_collider_after_kick = false;
     public int number_of_kicks = 0;
 
+    public bool adjust_sensitivity = false;
+
     int sitting_still_for_frames = 0;
     int sitting_Still_needed_to_stop_ball = 20;
     int stop_ball_cooldown = -100;      // After stoping the ball, ensure they can't stop it again for a bit
@@ -58,7 +60,7 @@ public class SingleMouseMovement : MonoBehaviour
         // INPUT
         // Adjust sensitivity
         float mouse_wheel = player.input[InputCode.MouseWheel].Value;
-        if (mouse_wheel != 0)
+        if (adjust_sensitivity && mouse_wheel != 0)
         {
             Adjust_Sensitivty(mouse_wheel);
         }

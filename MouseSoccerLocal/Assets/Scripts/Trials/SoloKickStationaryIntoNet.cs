@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class SoloKickStationaryIntoNetRecord : Round_Record
 {
+    public int ball_position = 0;   // Where did the ball spawn?
     public bool scored = false;
 
 
@@ -18,49 +19,53 @@ public class SoloKickStationaryIntoNetRecord : Round_Record
 
     public override string ToString()
     {
-        return base.ToString() + "," + scored;
+        return base.ToString() + "," + ball_position + "," + scored;
     }
     public override string FieldNames()
     {
-        return base.FieldNames() + ",scored";
+        return base.FieldNames() + ",ball_position,scored";
     }
 }
 
 
 public class SoloKickStationaryIntoNet : Trial 
 {
-    public Transform position_to_spawn_ball;
+    public List<Transform> positions_to_spawn_ball = new List<Transform>();
     public Transform position_to_spawn_player;
     public Text timer_text;
-    public SoloKickIntoNetRecord current_round_record;
+    public SoloKickStationaryIntoNetRecord current_round_record;
 
     public override void StartTrial()
     {
         base.StartTrial();
     }
 
-
+    int ball_pos_counter = 0;
     public override void StartRound()
     {
         base.StartRound();
         round_running = false;
 
+        // Add entry to list for whether we were successful or not
+        round_results.Add(current_round_record);
+        current_round_record.ball_position = (int)(ball_pos_counter % positions_to_spawn_ball.Count);
+        current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
+        current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
+        Debug.Log("num results " + round_results.Count);
+
         // Spawn ball rolling in right direction
         if (Ball.ball == null)
         {
             // Spawn new ball
-            GameObject go = ScoreManager.score_manager.SpawnBall(position_to_spawn_ball.transform.localPosition);
+            GameObject go = ScoreManager.score_manager.SpawnBall(positions_to_spawn_ball[0].transform.localPosition);
         }
         else
         {
+            // Get position
             // Ball position
-            Ball.ball.Reset(position_to_spawn_ball.transform.position);
+            Ball.ball.Reset(positions_to_spawn_ball[(int)(ball_pos_counter % positions_to_spawn_ball.Count)].transform.position);
+            ball_pos_counter++;
         }
-
-        // Add entry to list for whether we were successful or not
-        round_results.Add(current_round_record);
-        current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
-        current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
 
         // Put player in correct spot
         ScoreManager.score_manager.players[0].transform.position = position_to_spawn_player.transform.position;
@@ -101,7 +106,7 @@ public class SoloKickStationaryIntoNet : Trial
     {
         base.ResetBetweenRounds();
 
-        current_round_record = new SoloKickIntoNetRecord();
+        current_round_record = new SoloKickStationaryIntoNetRecord();
     }
 
 

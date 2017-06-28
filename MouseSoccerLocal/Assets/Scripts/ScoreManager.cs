@@ -188,7 +188,7 @@ public class ScoreManager : MonoBehaviour
 
     void OnGUI()
     {
-        if (debug_view)
+        if (Application.isEditor && debug_view)
         {
             float ms_per_frame = deltaTime * 1000.0f;
             float fps = 1.0f / deltaTime;

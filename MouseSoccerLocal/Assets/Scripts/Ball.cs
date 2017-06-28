@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour
 
     public Rigidbody2D physics;
     Animator anim;
+    SpriteRenderer sprite;
     public TrailRenderer trail;
 
     [SerializeField]
@@ -23,6 +24,7 @@ public class Ball : MonoBehaviour
         //anim = this.GetComponent<Animator>();
         trail = this.GetComponent<TrailRenderer>();
         collider = this.GetComponent<Collider2D>();
+        sprite = this.GetComponent<SpriteRenderer>();
     }
     private void Start()
     {
@@ -42,9 +44,18 @@ public class Ball : MonoBehaviour
     }
 
 
-    public void SetCollisions(bool enabled_)
+    public void SetCollisions(bool enable_colls)
     {
-        collider.enabled = enabled_;
+        if (enable_colls)
+            sprite.color = Color.white;
+        else
+        {
+            Color c = sprite.color;
+            c.a = 0.5f;
+            sprite.color = c;
+        }
+
+        collider.enabled = enable_colls;
     }
 
 

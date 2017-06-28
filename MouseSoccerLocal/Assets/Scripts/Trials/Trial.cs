@@ -10,14 +10,16 @@ public class Round_Record
     public int round_number;
     public int ms_input_lag_of_round;
     public float round_time_taken = 0;
+    public bool practice_round = false;     // True if this round shouldn't count
+    public bool noticed_lag = false;
 
     public virtual new string ToString()
     {
-        return trial_id + "," + participant_id + "," + round_number + "," + ms_input_lag_of_round + "," + round_time_taken;
+        return trial_id + "," + participant_id + "," + round_number + "," + practice_round + "," + ms_input_lag_of_round + "," + round_time_taken + "," + noticed_lag;
     }
     public virtual string FieldNames()
     {
-        return "trial_id,participant_id,round_number,input_lag(ms),time_for_round(ms)";
+        return "trial_id,participant_id,round_number,practice_round,input_lag(ms),time_for_round(ms),noticed_lag";
     }
 }
 
@@ -37,7 +39,11 @@ public class Trial : MonoBehaviour
     public bool trial_running = false;
     public bool round_running = false;
     public bool enforce_time_limit = false;     // Does this trial have a time limit for each round? Ex: each round is 3 seconds
-    public float time_limit = 3.0f;
+    public float time_limit = 3.0f;     // Time limit for the current round
+
+    public int survey_every_x_rounds = 15;      // When should we bring up the survey menu?
+    public List<GameObject> survey_objects_to_activate = new List<GameObject>();
+    public int practice_rounds_per_survey = 3;
 
     public List<int> input_delay_per_round = new List<int>();
 
@@ -74,7 +80,7 @@ public class Trial : MonoBehaviour
         round_running = true;
 
         // Set the alotted input delay for this round
-        if (input_delay_per_round.Count > current_round && input_delay_per_round[current_round] != null)
+        if (input_delay_per_round.Count > current_round)
         {
             GlobalSettings.InputDelayFrames = input_delay_per_round[current_round];
             
@@ -99,12 +105,25 @@ public class Trial : MonoBehaviour
         current_round++;
         if (current_round < total_rounds)
         {
-            StartRound();
+            // Wait to start so survey has a moment to pause
+            StartCoroutine(WaitToStartRound());
         }
         else
         {
-            FinishTrial();
+            StartCoroutine(WaitToFinishTrial());
         }
+    }
+    IEnumerator WaitToStartRound()
+    {
+        round_running = false;
+        yield return new WaitForSeconds(0.01f);
+        StartRound();
+    }
+    IEnumerator WaitToFinishTrial()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        FinishTrial();
     }
     // Record anything we need to before resetting
     public virtual void FinishRound()
@@ -112,6 +131,38 @@ public class Trial : MonoBehaviour
         round_results[current_round].round_time_taken = time_for_current_round;
         round_results[current_round].round_number = current_round + 1;
         round_results[current_round].trial_id = trial_id;
+
+        // Was this a practice round?
+        if (practice_rounds_per_survey > 0
+            && current_round % survey_every_x_rounds < practice_rounds_per_survey)
+            round_results[current_round].practice_round = true;
+
+        // Should we bring up the survey window?
+        if (current_round > 0 
+            && survey_every_x_rounds > 0
+            && (current_round + 1) % survey_every_x_rounds == 0)
+        {
+            ActivateSurvey();
+        }
+    }
+
+
+    // Bring up the survey window, pausing the game
+    public virtual void ActivateSurvey()
+    {
+        Debug.Log("Activating survey", this.gameObject);
+        foreach (GameObject g in survey_objects_to_activate)
+        {
+            g.SetActive(true);
+        }
+    }
+    public virtual void NoticedLagFromSurvey(bool noticedLag)
+    {
+        // Add to the last X trial records that this survey applied to
+        for (int x = round_results.Count - survey_every_x_rounds; x < round_results.Count; x++)
+        {
+            round_results[x].noticed_lag = noticedLag;
+        }
     }
 
 
@@ -123,7 +174,7 @@ public class Trial : MonoBehaviour
     
     
     public virtual void FinishTrial()
-    {
+    {        
         // Reset everything
         ResetTrial();
 
@@ -134,7 +185,7 @@ public class Trial : MonoBehaviour
         if (to_menu_after_trial)
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
-	
+
 
     public virtual void ResetTrial()
     {
@@ -201,7 +252,7 @@ public class Trial : MonoBehaviour
     Rect gui_rect = new Rect(Screen.width - 200, Screen.height - 50, 200, 50);
     private void OnGUI()
     {
-        if (!trial_running)
+        if (Time.timeScale <= 0 && !trial_running)
             return;
         string display_string = "";
         display_string += "Round: " + current_round;
