@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 212299453}
   m_Layer: 10
   m_Name: Rightwall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 273639458}
   m_Layer: 0
   m_Name: TopRight
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 346224123}
   m_Layer: 0
   m_Name: BottomLeft
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -496,6 +496,7 @@ MonoBehaviour:
   survey_objects_to_activate:
   - {fileID: 1235358794}
   - {fileID: 1219415035}
+  practice_rounds_per_survey: 3
   input_delay_per_round: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001900000019000000190000001900000019000000190000001900000019000000190000001900000019000000190000001900000019000000190000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b000000960000009600000096000000960000009600000096000000960000009600000096000000960000009600000096000000960000009600000096000000
   text_file_name: KickStationaryBall.csv
   timer_beeps: {fileID: 1695031112}
@@ -548,7 +549,7 @@ GameObject:
   - component: {fileID: 468171280}
   m_Layer: 0
   m_Name: Goal
-  m_TagString: Untagged
+  m_TagString: Net
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -564,6 +565,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1276073947}
+  - {fileID: 1131568879}
+  - {fileID: 707797076}
   m_Father: {fileID: 1553921262}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -581,6 +584,8 @@ MonoBehaviour:
   teams_goal: 1
   scoring_message: Blue Scored!
   reset_ball_position: 0
+  top_of_net: {fileID: 1131568879}
+  bottom_of_net: {fileID: 707797076}
 --- !u!61 &468171279
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3859,7 +3864,7 @@ GameObject:
   - component: {fileID: 604570999}
   m_Layer: 10
   m_Name: Leftwall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4057,6 +4062,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topright: {fileID: 273639456}
   bottomleft: {fileID: 346224121}
+--- !u!1 &707797075
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 707797076}
+  m_Layer: 0
+  m_Name: Bottom of net
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &707797076
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 707797075}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.55, y: -0, z: 0}
+  m_LocalScale: {x: 1, y: 1.0000005, z: 1}
+  m_Children: []
+  m_Father: {fileID: 468171277}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &712300097
 GameObject:
   m_ObjectHideFlags: 0
@@ -4159,7 +4192,7 @@ GameObject:
   - component: {fileID: 839061059}
   m_Layer: 10
   m_Name: Bottomwall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4267,7 +4300,7 @@ GameObject:
   - component: {fileID: 869067450}
   m_Layer: 10
   m_Name: Topwall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4432,6 +4465,8 @@ MonoBehaviour:
   teams_goal: 0
   scoring_message: Red Scored!
   reset_ball_position: 0
+  top_of_net: {fileID: 0}
+  bottom_of_net: {fileID: 0}
 --- !u!1 &977480578
 GameObject:
   m_ObjectHideFlags: 0
@@ -4521,6 +4556,34 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 977480578}
+--- !u!1 &1131568878
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1131568879}
+  m_Layer: 0
+  m_Name: Top of net
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1131568879
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1131568878}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.55, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 468171277}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1163522825
 Prefab:
   m_ObjectHideFlags: 0
@@ -4909,7 +4972,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 476419132
+  randomSeed: -1460869738
   InitialModule:
     serializedVersion: 3
     enabled: 1

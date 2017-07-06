@@ -10,8 +10,8 @@ public class Round_Record
     public int round_number;
     public int ms_input_lag_of_round;
     public float round_time_taken = 0;
-    public bool practice_round = false;     // True if this round shouldn't count
-    public bool noticed_lag = false;
+    public int practice_round = 0;     //  0 false, 1 true
+    public int noticed_lag = 0;        //  0 false, 1 true
 
     public virtual new string ToString()
     {
@@ -19,7 +19,7 @@ public class Round_Record
     }
     public virtual string FieldNames()
     {
-        return "trial_id,participant_id,round_number,practice_round,input_lag(ms),time_for_round(ms),noticed_lag";
+        return "trial_id,participant_id,round_number,practice_round,input_lag,time_for_round,noticed_lag";
     }
 }
 
@@ -135,7 +135,7 @@ public class Trial : MonoBehaviour
         // Was this a practice round?
         if (practice_rounds_per_survey > 0
             && current_round % survey_every_x_rounds < practice_rounds_per_survey)
-            round_results[current_round].practice_round = true;
+            round_results[current_round].practice_round = 1;
 
         // Should we bring up the survey window?
         if (current_round > 0 
@@ -161,7 +161,7 @@ public class Trial : MonoBehaviour
         // Add to the last X trial records that this survey applied to
         for (int x = round_results.Count - survey_every_x_rounds; x < round_results.Count; x++)
         {
-            round_results[x].noticed_lag = noticedLag;
+            round_results[x].noticed_lag = noticedLag ? 1 : 0;
         }
     }
 

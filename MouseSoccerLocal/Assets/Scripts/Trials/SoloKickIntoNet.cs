@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class SoloKickIntoNetRecord : Round_Record
 {
-    public bool scored = false;
+    public int scored = 0;
 
 
     public SoloKickIntoNetRecord()
@@ -135,7 +135,7 @@ public class SoloKickIntoNet : Trial
             return;
 
         base.GoalScored();
-        current_round_record.scored = true;
+        current_round_record.scored = 1;
 
         if (trial_running)
             NextRound();

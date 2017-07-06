@@ -9,6 +9,10 @@ public class Net : MonoBehaviour
     public string scoring_message;
     public bool reset_ball_position = false;
 
+    public Transform top_of_net;
+    public Transform bottom_of_net;
+
+
     void Start()
     {
 

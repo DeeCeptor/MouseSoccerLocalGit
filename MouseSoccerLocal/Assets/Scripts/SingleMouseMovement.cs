@@ -14,7 +14,7 @@ public class SingleMouseMovement : MonoBehaviour
     // Stores inputs. Used for adding input delay
     Queue<Vector2> input_queue = new Queue<Vector2>();
 
-    // What sensitivty are we currently using? Between min_sensitivity and max_sensitivity, 1 starts at 1
+    // What sensitivity are we currently using? Between min_sensitivity and max_sensitivity, 1 starts at 1
     // Can be altered using mouse wheel
     public float sensitivity = 1f;
     private const float min_sensitivity = 0.2f;

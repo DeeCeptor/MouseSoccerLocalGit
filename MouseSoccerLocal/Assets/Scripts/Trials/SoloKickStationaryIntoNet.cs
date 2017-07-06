@@ -8,8 +8,8 @@ using UnityEngine.UI;
 public class SoloKickStationaryIntoNetRecord : Round_Record
 {
     public int ball_position = 0;   // Where did the ball spawn?
-    public bool scored = false;
-
+    public int scored = 0;
+    public float accuracy;  // Measurement of angle of miss. The larger the value, the bigger the miss. 0 means it went in
 
     public SoloKickStationaryIntoNetRecord()
     {
@@ -35,6 +35,11 @@ public class SoloKickStationaryIntoNet : Trial
     public Text timer_text;
     public SoloKickStationaryIntoNetRecord current_round_record;
 
+    Vector2 starting_ball_pos = Vector2.zero;
+    float top_of_net_arc;
+    float bottom_of_net_arc;
+
+
     public override void StartTrial()
     {
         base.StartTrial();
@@ -51,19 +56,20 @@ public class SoloKickStationaryIntoNet : Trial
         current_round_record.ball_position = (int)(ball_pos_counter % positions_to_spawn_ball.Count);
         current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
         current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
-        Debug.Log("num results " + round_results.Count);
 
         // Spawn ball rolling in right direction
         if (Ball.ball == null)
         {
             // Spawn new ball
             GameObject go = ScoreManager.score_manager.SpawnBall(positions_to_spawn_ball[0].transform.localPosition);
+            starting_ball_pos = positions_to_spawn_ball[0].transform.localPosition;
         }
         else
         {
             // Get position
             // Ball position
-            Ball.ball.Reset(positions_to_spawn_ball[(int)(ball_pos_counter % positions_to_spawn_ball.Count)].transform.position);
+            starting_ball_pos = positions_to_spawn_ball[(int)(ball_pos_counter % positions_to_spawn_ball.Count)].transform.position;
+            Ball.ball.Reset(starting_ball_pos);
             ball_pos_counter++;
         }
 
@@ -75,6 +81,14 @@ public class SoloKickStationaryIntoNet : Trial
         Ball.ball.SetCollisions(false);
 
         StartCoroutine(StartRoundIn());
+
+
+        // Figure out arc of ball
+        // Get next top and bottom positions
+        Net n = GameObject.FindGameObjectWithTag("Net").GetComponent<Net>();
+        top_of_net_arc = AngleBetweenVector2(positions_to_spawn_ball[ball_pos_counter-1].transform.position, n.top_of_net.transform.position);
+        bottom_of_net_arc = AngleBetweenVector2(positions_to_spawn_ball[ball_pos_counter-1].transform.position, n.bottom_of_net.transform.position);
+        Debug.Log(top_of_net_arc + " : " + bottom_of_net_arc + ","  + Ball.ball.transform.position + ";" + n.top_of_net.transform.position + "," + n.bottom_of_net.transform.position);
     }
     IEnumerator StartRoundIn()
     {
@@ -101,6 +115,33 @@ public class SoloKickStationaryIntoNet : Trial
         round_running = true;
     }
 
+
+
+    private float AngleBetweenVector2(Vector2 vec1, Vector2 vec2)
+    {
+        Vector2 diference = vec2 - vec1;
+        float sign = (vec2.y < vec1.y) ? -1.0f : 1.0f;
+        return Vector2.Angle(Vector2.right, diference) * sign;
+    }
+    public void SetAccuracy(Vector2 position_hit)
+    {
+        float angle_to_hit = AngleBetweenVector2(positions_to_spawn_ball[ball_pos_counter-1].transform.position, position_hit);
+
+        // Calculate difference between angle_to_hit and the arc of the goal
+        if (angle_to_hit > bottom_of_net_arc && angle_to_hit < top_of_net_arc)
+        {
+            Debug.Log("It went in!");
+            current_round_record.accuracy = 0;
+            return;
+        }
+
+        float difference_to_top = angle_to_hit - top_of_net_arc;
+        float difference_to_bot = angle_to_hit - bottom_of_net_arc;
+        float biggest_diff = Mathf.Min( Mathf.Abs(difference_to_top), Mathf.Abs(difference_to_bot));
+        current_round_record.accuracy = biggest_diff;
+
+        Debug.Log("Hit wall: " + angle_to_hit + "," + difference_to_top + "," + difference_to_bot + " actual: " + biggest_diff, this.gameObject);
+    }
 
     public override void ResetBetweenRounds()
     {
@@ -131,7 +172,8 @@ public class SoloKickStationaryIntoNet : Trial
             return;
 
         base.GoalScored();
-        current_round_record.scored = true;
+        current_round_record.scored = 1;
+        SetAccuracy(Ball.ball.transform.position);
 
         if (trial_running)
             NextRound();

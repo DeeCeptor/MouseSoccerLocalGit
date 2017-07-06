@@ -1,3 +1,9 @@
+Depends whether we want to measure performance or noticing lag
+Vary lag levels instead of ramping them up?
+
+
+
+
 Using HLAPI
 
 Works okay (but not perfect)

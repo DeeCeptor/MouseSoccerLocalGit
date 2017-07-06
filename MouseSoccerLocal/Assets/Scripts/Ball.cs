@@ -28,7 +28,6 @@ public class Ball : MonoBehaviour
     }
     private void Start()
     {
-
     }
 
 
@@ -94,6 +93,16 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //CollidedWithPlayer(collision.gameObject);
+
+        // Check if it's with a wall
+        if (collision.gameObject.tag == "Wall" && Trial.trial is SoloKickStationaryIntoNet)
+        {
+            SoloKickStationaryIntoNet kick = (SoloKickStationaryIntoNet)Trial.trial;
+            if (collision.contacts.Length > 0)
+                kick.SetAccuracy(collision.contacts[0].point);
+            else
+                kick.SetAccuracy(this.transform.position);
+        }
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
