@@ -13,7 +13,9 @@ public class Ball : MonoBehaviour
     public TrailRenderer trail;
 
     [SerializeField]
-    private float max_speed = 20f;
+    public float max_speed = 20f;
+
+    public bool constant_velocity = false;
 
     Collider2D collider;
 
@@ -61,7 +63,11 @@ public class Ball : MonoBehaviour
     private void FixedUpdate()
     {
         // Clamp max speed
-        if (physics.velocity.magnitude > max_speed)
+        if (constant_velocity)
+        {
+            physics.velocity = physics.velocity.normalized * max_speed;
+        }
+        else if (physics.velocity.magnitude > max_speed)
         {
             physics.velocity *= max_speed / physics.velocity.magnitude;
         }

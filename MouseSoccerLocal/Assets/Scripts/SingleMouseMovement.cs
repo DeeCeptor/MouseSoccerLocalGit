@@ -14,6 +14,12 @@ public class SingleMouseMovement : MonoBehaviour
     // Stores inputs. Used for adding input delay
     Queue<Vector2> input_queue = new Queue<Vector2>();
 
+    // How can the player move?
+    public bool allow_x_movement = true;
+    public bool allow_y_movement = true;
+    public bool allow_sprite_rotation = true;
+    public bool kicks_ball = true;
+
     // What sensitivity are we currently using? Between min_sensitivity and max_sensitivity, 1 starts at 1
     // Can be altered using mouse wheel
     public float sensitivity = 1f;
@@ -47,7 +53,7 @@ public class SingleMouseMovement : MonoBehaviour
     float rotation_target;
     Vector3 position_delta;
 
-    public void Adjust_Sensitivty(float adjustment)
+    public void Adjust_Sensitivity(float adjustment)
     {
         sensitivity = Mathf.Clamp(sensitivity + (adjustment * sensitivity_increment), min_sensitivity, max_sensitivity);
         Debug.Log("New sensitivity: " + sensitivity);
@@ -62,11 +68,15 @@ public class SingleMouseMovement : MonoBehaviour
         float mouse_wheel = player.input[InputCode.MouseWheel].Value;
         if (adjust_sensitivity && mouse_wheel != 0)
         {
-            Adjust_Sensitivty(mouse_wheel);
+            Adjust_Sensitivity(mouse_wheel);
         }
 
         // Get current device input
-        cur_input = new Vector2(player.input[InputCode.MouseX].Value, player.input[InputCode.MouseY].Value);
+        cur_input = Vector2.zero;
+        if (allow_x_movement)
+            cur_input.x = player.input[InputCode.MouseX].Value;
+        if (allow_y_movement)
+            cur_input.y = player.input[InputCode.MouseY].Value;
 
         // Place input in our queue
         input_queue.Enqueue(cur_input);
@@ -92,16 +102,19 @@ public class SingleMouseMovement : MonoBehaviour
 
         /////////////////////////////////////////////////////
         // ROTATION
-        if (position_delta != Vector3.zero)
+        if (allow_sprite_rotation)
         {
-            Vector2 pos = position_delta.normalized;
-            float angleRadians = Mathf.Atan2(pos.y, pos.x);
-            float angleDegrees = angleRadians * Mathf.Rad2Deg;
-            if (angleDegrees > 1f || angleDegrees < -1f)
-                rotation_target = angleDegrees;
-            //physics.MoveRotation(rotation_target);
+            if (position_delta != Vector3.zero)
+            {
+                Vector2 pos = position_delta.normalized;
+                float angleRadians = Mathf.Atan2(pos.y, pos.x);
+                float angleDegrees = angleRadians * Mathf.Rad2Deg;
+                if (angleDegrees > 1f || angleDegrees < -1f)
+                    rotation_target = angleDegrees;
+                //physics.MoveRotation(rotation_target);
+            }
+            physics.MoveRotation(Mathf.LerpAngle(physics.rotation, rotation_target, Time.deltaTime * 10));
         }
-        physics.MoveRotation(Mathf.LerpAngle(physics.rotation, rotation_target, Time.deltaTime * 10));
         /////////////////////////////////////////////////////
 
         // Add force to move us where we should be
@@ -125,7 +138,7 @@ public class SingleMouseMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ball")
+        if (collision.gameObject.tag == "Ball" && kicks_ball)
         {
             KickBall(collision);
         }

@@ -34,8 +34,12 @@ public class Net : MonoBehaviour
     }
     public void Effects()
     {
-        this.GetComponentInChildren<ParticleSystem>().Play();
-        this.GetComponent<AudioSource>().Play();
+        ParticleSystem ps = this.GetComponentInChildren<ParticleSystem>();
+        if (ps != null)
+            ps.Play();
+        AudioSource a = this.GetComponent<AudioSource>();
+        if (a != null)
+            a.Play();
     }
 
 
