@@ -7,7 +7,9 @@ using UnityEngine.UI;
 
 public class SoloPongRecord : Round_Record
 {
-    public int scored = 0;
+    public int paddle_bounces = 0;      // How many times did the ball bounce off the paddle? The higher score, the better
+    public int misses;          // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
+    public float avg_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
 
 
     public SoloPongRecord()
@@ -18,11 +20,11 @@ public class SoloPongRecord : Round_Record
 
     public override string ToString()
     {
-        return base.ToString() + "," + scored;
+        return base.ToString() + "," + paddle_bounces + "," + misses + "," + avg_missed_by;
     }
     public override string FieldNames()
     {
-        return base.FieldNames() + ",scored";
+        return base.FieldNames() + ",paddle_bounces,misses,avg_missed_by";
     }
 }
 
@@ -36,8 +38,11 @@ public class SoloPong : Trial
     //bool successful_this_round = false;
     public SoloPongRecord current_round_record;
 
+    float normal_ball_max_speed;
+
     public override void StartTrial()
     {
+        normal_ball_max_speed = Ball.ball.max_speed;
         base.StartTrial();
 
         //ScoreManager.score_manager.CmdReset();
@@ -47,6 +52,8 @@ public class SoloPong : Trial
 
     public override void StartRound()
     {
+        this.StopAllCoroutines();
+
         base.StartRound();
         round_running = false;
 
@@ -96,7 +103,7 @@ public class SoloPong : Trial
 
 
         // Ball velocity
-        Ball.ball.physics.velocity = new Vector2(0.5f, 0.5f);
+        ResetAndShootBall(position_to_spawn_ball.transform.localPosition);
         // Allow player movement
         //ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().enabled = true;
         Ball.ball.SetCollisions(true);
@@ -104,7 +111,12 @@ public class SoloPong : Trial
         start_beep.Play();
         round_running = true;
     }
-
+    public void ResetAndShootBall(Vector2 position)
+    {
+        Ball.ball.Reset(position);
+        // Set random x/y angle
+        Ball.ball.physics.velocity = new Vector2(UnityEngine.Random.Range(-0.5f, 0.5f), 0.5f);
+    }
 
     public override void ResetBetweenRounds()
     {
@@ -118,6 +130,13 @@ public class SoloPong : Trial
     {
         ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().ResetKicks();
 
+        // Average how much we missed by
+        foreach (SoloPongRecord r in round_results)
+        {
+            if (r.avg_missed_by != 0)
+                r.avg_missed_by = r.avg_missed_by / r.misses;
+        }
+
         // Record our findings in a text file
         CreateTextFile();
 
@@ -129,16 +148,36 @@ public class SoloPong : Trial
     }
 
 
+    // Pong ball entered end zone, finish round
     public override void GoalScored()
     {
         if (!trial_running)
             return;
 
         base.GoalScored();
-        current_round_record.scored = 1;
 
+        // Calculate how much the ball missed by
+        float missed_by = Ball.ball.GetComponent<PongBall>().DistanceFromBall(ScoreManager.score_manager.players[0].transform.position);
+        current_round_record.avg_missed_by += missed_by;
+        current_round_record.misses += 1;
+        Debug.Log("Ball missed by " + missed_by + ", total misses: " + current_round_record.misses);
+
+        ResetAndShootBall(position_to_spawn_ball.transform.localPosition);
+        start_beep.Play();
+        StartCoroutine(StopThenSpeedUpBall());
+        /*
         if (trial_running)
-            NextRound();
+            NextRound();*/
+    }
+    IEnumerator StopThenSpeedUpBall()
+    {
+        float f = 0.05f;
+        while (f < 1)
+        {
+            Ball.ball.max_speed = normal_ball_max_speed * f;
+            f += Time.deltaTime;
+            yield return 1;
+        }
     }
 
 

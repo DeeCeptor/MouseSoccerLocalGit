@@ -485,18 +485,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trial_id: 3
   current_round: -1
-  total_rounds: 60
+  total_rounds: 3
   time_for_current_round: 0
   total_time_for_trial: 0
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
-  time_limit: 20
-  survey_every_x_rounds: 15
+  time_limit: 30
+  survey_every_x_rounds: 25
   survey_objects_to_activate:
   - {fileID: 1235358794}
   practice_rounds_per_survey: 3
-  input_delay_per_round: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  input_delay_values: {fileID: 4900000, guid: dc52282963a4e5844acc35bb44f60925, type: 3}
+  input_delay_per_round: 000000004b0000001900000019000000fa000000fa0000004b00000000000000fa00000096000000190000004b0000004b0000000000000019000000960000009600000000000000fa00000096000000
   text_file_name: Pong.csv
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}
@@ -580,6 +581,7 @@ MonoBehaviour:
   teams_goal: 1
   scoring_message: Blue Scored!
   reset_ball_position: 0
+  reset_score_when_touched: 0
   top_of_net: {fileID: 1131568879}
   bottom_of_net: {fileID: 707797076}
 --- !u!61 &468171279
@@ -731,7 +733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &593747159
 Transform:
   m_ObjectHideFlags: 0
@@ -1372,6 +1374,7 @@ MonoBehaviour:
   teams_goal: 0
   scoring_message: Red Scored!
   reset_ball_position: 0
+  reset_score_when_touched: 1
   top_of_net: {fileID: 0}
   bottom_of_net: {fileID: 0}
 --- !u!1 &977480578
@@ -1738,52 +1741,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 183}
   m_SizeDelta: {x: 220, y: 149}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1001 &1254930003
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -1.6183319
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 1.2606163
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4283966435371040, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_RootOrder
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1621668258466508, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: e907d70cde6b4714b9ba291393f10ca4, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1276073946
 GameObject:
   m_ObjectHideFlags: 0
@@ -4917,6 +4874,16 @@ Prefab:
         type: 2}
       propertyPath: max_speed
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 96031759157586110, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: m_Parameters.colorGradient.key0.a
+      value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 96031759157586110, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: m_Parameters.colorGradient.key1.a
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd, type: 2}
@@ -8803,6 +8770,7 @@ MonoBehaviour:
   teams_goal: 0
   scoring_message: 
   reset_ball_position: 0
+  reset_score_when_touched: 1
   top_of_net: {fileID: 0}
   bottom_of_net: {fileID: 0}
 --- !u!82 &1872676584
@@ -9194,7 +9162,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1870616622
+  randomSeed: -274201451
   InitialModule:
     serializedVersion: 3
     enabled: 1

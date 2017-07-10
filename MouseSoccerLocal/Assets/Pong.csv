@@ -1,0 +1,4 @@
+trial_id,participant_id,round_number,practice_round,input_lag,time_for_round,noticed_lag,paddle_bounces,misses,avg_missed_by
+3,0,1,1,0,30.01034,0,17,4,1.302723
+3,0,2,1,0,30.00741,0,8,15,4.712968
+3,0,3,1,75,30.02243,0,0,23,6.279121

@@ -485,19 +485,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trial_id: 1
   current_round: -1
-  total_rounds: 60
+  total_rounds: 78
   time_for_current_round: 0
   total_time_for_trial: 0
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
   time_limit: 2
-  survey_every_x_rounds: 15
+  survey_every_x_rounds: 99
   survey_objects_to_activate:
   - {fileID: 1235358794}
   - {fileID: 1219415035}
   practice_rounds_per_survey: 3
-  input_delay_per_round: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001900000019000000190000001900000019000000190000001900000019000000190000001900000019000000190000001900000019000000190000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b000000960000009600000096000000960000009600000096000000960000009600000096000000960000009600000096000000960000009600000096000000
+  input_delay_values: {fileID: 4900000, guid: dba76348007bd9c41be8d0629e351f67, type: 3}
+  input_delay_per_round: 
   text_file_name: KickStationaryBall.csv
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}
@@ -584,6 +585,7 @@ MonoBehaviour:
   teams_goal: 1
   scoring_message: Blue Scored!
   reset_ball_position: 0
+  reset_score_when_touched: 0
   top_of_net: {fileID: 1131568879}
   bottom_of_net: {fileID: 707797076}
 --- !u!61 &468171279
@@ -4465,6 +4467,7 @@ MonoBehaviour:
   teams_goal: 0
   scoring_message: Red Scored!
   reset_ball_position: 0
+  reset_score_when_touched: 0
   top_of_net: {fileID: 0}
   bottom_of_net: {fileID: 0}
 --- !u!1 &977480578

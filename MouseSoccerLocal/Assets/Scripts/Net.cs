@@ -5,14 +5,20 @@ using UnityEngine.Networking;
 
 public class Net : MonoBehaviour
 {
+    public static Net net;
     public Team teams_goal;    // Blue or red
     public string scoring_message;
     public bool reset_ball_position = false;
+    public bool reset_score_when_touched = false;
 
     public Transform top_of_net;
     public Transform bottom_of_net;
 
 
+    private void Awake()
+    {
+        net = this;
+    }
     void Start()
     {
 
@@ -27,9 +33,14 @@ public class Net : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Ball")
+        if (other.tag == "Ball" && !reset_score_when_touched)
         {
             StartCoroutine(GoalScored(other));
+        }
+        else if (other.tag == "Ball")
+        {
+            ScoreManager.score_manager.ResetScore();
+            ScoreManager.score_manager.SendMessage("GoalScored");
         }
     }
     public void Effects()

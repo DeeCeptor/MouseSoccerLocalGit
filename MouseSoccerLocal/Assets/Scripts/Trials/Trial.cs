@@ -45,7 +45,8 @@ public class Trial : MonoBehaviour
     public List<GameObject> survey_objects_to_activate = new List<GameObject>();
     public int practice_rounds_per_survey = 3;
 
-    public List<int> input_delay_per_round = new List<int>();
+    public TextAsset input_delay_values;        // One value per line
+    public List<int> input_delay_per_round = new List<int>();   // Read from a text file (input_delay_values)
 
     public string text_file_name = "Results.txt";
 
@@ -58,15 +59,36 @@ public class Trial : MonoBehaviour
     public virtual void Awake()
     {
         trial = this;
+        PopulateInputDelays();
     }
     public virtual void Start()
     {
 
     }
 
-    
+
+    // Input delay files are .txt files separated by newlines
+    public void PopulateInputDelays()
+    {
+        if (input_delay_values == null)
+            return;
+
+        input_delay_per_round.Clear();
+        string[] splits = { "\n" };
+        string[] str_vals = input_delay_values.text.Split(splits, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string s in str_vals)
+        {
+            input_delay_per_round.Add(int.Parse(s));
+        }
+        Debug.Log("Done loading input delay values", this.gameObject);
+    }
+
+
     public virtual void StartTrial()
     {
+        UnityEngine.Random.InitState(999);
+
         ResetTrial();
         MultiMouseManager.mouse_manager.players_can_join = false;
         trial_running = true;
