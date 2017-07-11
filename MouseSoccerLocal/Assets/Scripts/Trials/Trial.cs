@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class Round_Record
 {
@@ -22,6 +24,7 @@ public class Round_Record
         return "trial_id,participant_id,round_number,practice_round,input_lag,time_for_round,noticed_lag";
     }
 }
+
 
 // Base class of a trial
 // Trial consists of multiple rounds being executed over and over
@@ -52,7 +55,7 @@ public class Trial : MonoBehaviour
 
     public AudioSource timer_beeps;
     public AudioSource start_beep;
-
+    public Text round_timer;
     public bool to_menu_after_trial = false;
 
 
@@ -274,6 +277,9 @@ public class Trial : MonoBehaviour
     Rect gui_rect = new Rect(Screen.width - 200, Screen.height - 50, 200, 50);
     private void OnGUI()
     {
+        if (round_timer != null)
+            round_timer.text = "" + (int)(time_limit - time_for_current_round);
+
         if (Time.timeScale <= 0 && !trial_running)
             return;
         string display_string = "";

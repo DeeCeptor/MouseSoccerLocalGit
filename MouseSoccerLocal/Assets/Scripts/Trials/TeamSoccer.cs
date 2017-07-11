@@ -34,7 +34,7 @@ public class TeamSoccer : Trial
     public Text timer_text;
     public TeamSoccerRecord current_round_record;
 
-    public Text round_timer;    // Displays how much time is left in the round
+    //public Text round_timer;    // Displays how much time is left in the round
 
     float pre_round_timer = 3.0f;
 

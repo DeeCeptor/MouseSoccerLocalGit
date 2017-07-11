@@ -175,7 +175,7 @@ public class SoloPong : Trial
         while (f < 1)
         {
             Ball.ball.max_speed = normal_ball_max_speed * f;
-            f += Time.deltaTime;
+            f += Time.deltaTime * 0.5f;
             yield return 1;
         }
     }

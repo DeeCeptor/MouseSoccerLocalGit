@@ -55,7 +55,7 @@ public class PongBall : MonoBehaviour
 
         collision.gameObject.GetComponent<AudioSource>().Play();
 
-        Debug.Log(new_dir + ":" + signed_normalized_difference, this.gameObject);
+        //Debug.Log(new_dir + ":" + signed_normalized_difference, this.gameObject);
 
         /*
         BoxCollider2D box = collision.gameObject.GetComponent<BoxCollider2D>();

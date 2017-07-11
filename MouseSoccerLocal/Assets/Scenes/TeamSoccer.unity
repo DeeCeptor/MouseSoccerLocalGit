@@ -108,6 +108,52 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &58534472
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -1.6183319
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.2606163
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949900394004386, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1455951038139170, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &212299449
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,14 +552,18 @@ MonoBehaviour:
   round_running: 0
   enforce_time_limit: 1
   time_limit: 120
+  survey_every_x_rounds: 15
+  survey_objects_to_activate: []
+  practice_rounds_per_survey: 3
+  input_delay_values: {fileID: 0}
   input_delay_per_round: 00000000000000002c0100006400000000000000
   text_file_name: TeamSoccerResults.txt
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}
+  round_timer: {fileID: 1784223260}
   to_menu_after_trial: 0
   position_to_spawn_ball: {fileID: 1453924742}
   timer_text: {fileID: 1241637946}
-  round_timer: {fileID: 1784223260}
 --- !u!1 &468171276
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,6 +610,9 @@ MonoBehaviour:
   teams_goal: 1
   scoring_message: Blue Scored!
   reset_ball_position: 0
+  reset_score_when_touched: 0
+  top_of_net: {fileID: 0}
+  bottom_of_net: {fileID: 0}
 --- !u!61 &468171279
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4412,6 +4465,9 @@ MonoBehaviour:
   teams_goal: 0
   scoring_message: Red Scored!
   reset_ball_position: 0
+  reset_score_when_touched: 0
+  top_of_net: {fileID: 0}
+  bottom_of_net: {fileID: 0}
 --- !u!82 &938484653
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4610,7 +4666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   players_can_join: 1
-  player_prefab: {fileID: 1291690514366434, guid: b00c15cbc72434241b02b7916eb3310e,
+  player_prefab: {fileID: 1455951038139170, guid: 5f0b0c6709b81fa4d9251e6624fe3ef4,
     type: 2}
 --- !u!114 &1239990914
 MonoBehaviour:

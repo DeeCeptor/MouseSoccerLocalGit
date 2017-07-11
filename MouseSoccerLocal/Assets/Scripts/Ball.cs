@@ -10,6 +10,8 @@ public class Ball : MonoBehaviour
     public Rigidbody2D physics;
     Animator anim;
     SpriteRenderer sprite;
+
+    public bool freeze_when_touch_wall = false;
     public TrailRenderer trail;
 
     [SerializeField]
@@ -95,19 +97,30 @@ public class Ball : MonoBehaviour
 
     }
 
-
+    /*
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            collision.gameObject.GetComponent<SingleMouseMovement>().KickBall(collision);
+        }
+    }*/
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //CollidedWithPlayer(collision.gameObject);
-
         // Check if it's with a wall
-        if (collision.gameObject.tag == "Wall" && Trial.trial is SoloKickStationaryIntoNet)
+        if (collision.gameObject.tag == "Wall")
         {
-            SoloKickStationaryIntoNet kick = (SoloKickStationaryIntoNet)Trial.trial;
-            if (collision.contacts.Length > 0)
-                kick.SetAccuracy(collision.contacts[0].point);
-            else
-                kick.SetAccuracy(this.transform.position);
+            if (Trial.trial is SoloKickStationaryIntoNet)
+            {
+                SoloKickStationaryIntoNet kick = (SoloKickStationaryIntoNet)Trial.trial;
+                if (collision.contacts.Length > 0)
+                    kick.SetAccuracy(collision.contacts[0].point);
+                else
+                    kick.SetAccuracy(this.transform.position);
+            }
+
+            if (freeze_when_touch_wall)
+                this.SetCollisions(false);
         }
     }
     private void OnCollisionStay2D(Collision2D collision)

@@ -140,12 +140,24 @@ public class SingleMouseMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ball" && kicks_ball)
         {
-            KickBall(collision);
+            KickBall();
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Ball" && kicks_ball)
+        {
+            KickBall();
         }
     }
 
-    public void KickBall(Collision2D collision)
+    float time_of_last_kick;
+    asd
+    public void KickBall()
     {
+        if (time_of_last_kick + 0.2f > Time.time)
+            return;
+
         number_of_kicks++;
 
         //Rigidbody2D ball_physics = collision.gameObject.GetComponent<Rigidbody2D>();
@@ -156,10 +168,13 @@ public class SingleMouseMovement : MonoBehaviour
         {
             ball_physics.velocity = Vector2.zero;
             sitting_still_for_frames = stop_ball_cooldown;
+            Debug.Log("Still for " + sitting_still_for_frames + " frames");
         }
         // Kick the ball, adding force to it
         else
         {
+            time_of_last_kick = Time.time;
+
             Debug.Log("Kick " + cur_input.magnitude);
             ball_physics.AddForce(cur_input * kick_force_multiplier);
 
