@@ -53,6 +53,7 @@ public class SoloPong : Trial
     public override void StartRound()
     {
         this.StopAllCoroutines();
+        normal_ball_max_speed = Ball.ball.max_speed;
 
         base.StartRound();
         round_running = false;

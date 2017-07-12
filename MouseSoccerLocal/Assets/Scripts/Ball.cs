@@ -118,6 +118,14 @@ public class Ball : MonoBehaviour
                 else
                     kick.SetAccuracy(this.transform.position);
             }
+            else if (Trial.trial is SoloKickIntoNet)
+            {
+                SoloKickIntoNet kick = (SoloKickIntoNet)Trial.trial;
+                if (collision.contacts.Length > 0)
+                    kick.SetAccuracy(collision.contacts[0].point);
+                else
+                    kick.SetAccuracy(this.transform.position);
+            }
 
             if (freeze_when_touch_wall)
                 this.SetCollisions(false);

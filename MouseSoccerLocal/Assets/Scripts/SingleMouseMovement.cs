@@ -28,7 +28,7 @@ public class SingleMouseMovement : MonoBehaviour
     private const float sensitivity_increment = 0.1f;
     private const float speed_factor = 0.03f;   // Multiplied by sensitivity to get how far we move this frame
 
-    private const float kick_force_multiplier = 2000f;
+    private const float kick_force_multiplier = 2000f;//2000f
 
     Vector2 cur_input;  // From the current fixedupdate frame
 
@@ -62,6 +62,13 @@ public class SingleMouseMovement : MonoBehaviour
 
     void FixedUpdate () 
 	{
+        if (physics.isKinematic)
+            KinematicMovement();
+        else
+            DynamicMovement();
+    }
+    public void KinematicMovement()
+    {
         ///////////////////////////////////////////////////////////
         // INPUT
         // Adjust sensitivity
@@ -125,8 +132,80 @@ public class SingleMouseMovement : MonoBehaviour
         this.transform.position = new Vector2(
             Mathf.Clamp(potential_position.x, CameraRect.arena_rect.xMin, CameraRect.arena_rect.xMax),
             Mathf.Clamp(potential_position.y, CameraRect.arena_rect.yMin, CameraRect.arena_rect.yMax));
+    }
+
+    // TEST
+    public void DynamicMovement()
+    {
+        ///////////////////////////////////////////////////////////
+        // INPUT
+        // Adjust sensitivity
+        float mouse_wheel = player.input[InputCode.MouseWheel].Value;
+        if (adjust_sensitivity && mouse_wheel != 0)
+        {
+            Adjust_Sensitivity(mouse_wheel);
+        }
+
+        // Get current device input
+        cur_input = Vector2.zero;
+        if (allow_x_movement)
+            cur_input.x = player.input[InputCode.MouseX].Value;
+        if (allow_y_movement)
+            cur_input.y = player.input[InputCode.MouseY].Value;
+
+        // Place input in our queue
+        input_queue.Enqueue(cur_input);
+        if (input_queue.Count > GlobalSettings.InputDelayFrames)
+        {
+            cur_input = input_queue.Dequeue();
+        }
+        else
+            cur_input = Vector2.zero;
+
+        // Check if we've been still for a bit
+        if (cur_input == Vector2.zero)
+            sitting_still_for_frames++;
+        else
+            sitting_still_for_frames = 0;
+
+        ////////////////////////////////////////////////////////
 
 
+        // Change player potential position based on inputs of device
+        position_delta = cur_input * (speed_factor * sensitivity);
+
+        /////////////////////////////////////////////////////
+        // ROTATION
+        if (allow_sprite_rotation)
+        {
+            if (position_delta != Vector3.zero)
+            {
+                Vector2 pos = position_delta.normalized;
+                float angleRadians = Mathf.Atan2(pos.y, pos.x);
+                float angleDegrees = angleRadians * Mathf.Rad2Deg;
+                if (angleDegrees > 1f || angleDegrees < -1f)
+                    rotation_target = angleDegrees;
+                //physics.MoveRotation(rotation_target);
+            }
+            physics.MoveRotation(Mathf.LerpAngle(physics.rotation, rotation_target, Time.deltaTime * 10));
+        }
+        /////////////////////////////////////////////////////
+
+        /*
+        // Add force to move us where we should be
+        //physics.AddForce(potential_position);
+        physics.MovePosition(potential_position);
+        
+        // Keep the player within view of the screen
+        this.transform.position = new Vector2(
+            Mathf.Clamp(this.transform.position.x, CameraRect.arena_rect.xMin, CameraRect.arena_rect.xMax),
+            Mathf.Clamp(this.transform.position.y, CameraRect.arena_rect.yMin, CameraRect.arena_rect.yMax));
+            */
+        physics.MovePosition(this.transform.position + position_delta);
+
+        //physics.velocity = cur_input * 40f;
+        /*if (cur_input.x != 0)
+            Debug.Log(cur_input);*/
     }
 
 
@@ -152,10 +231,10 @@ public class SingleMouseMovement : MonoBehaviour
     }
 
     float time_of_last_kick;
-    asd
+    float kick_cooldown = -0.1f;
     public void KickBall()
     {
-        if (time_of_last_kick + 0.2f > Time.time)
+        if (time_of_last_kick + kick_cooldown > Time.time)
             return;
 
         number_of_kicks++;

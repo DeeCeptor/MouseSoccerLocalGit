@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 58928454043415406}
   - component: {fileID: 212972558943878982}
   - component: {fileID: 82010791355319540}
+  - component: {fileID: 61649556544569724}
   m_Layer: 9
   m_Name: Player (trigger, exactly follow mouse)
   m_TagString: Player
@@ -56,7 +57,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 5
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -64,7 +65,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 0
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &58928454043415406
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -74,12 +75,37 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.10750089
+--- !u!61 &61649556544569724
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1455951038139170}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.21, y: 0.31}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.21, y: 0.31}
+  m_EdgeRadius: 0
 --- !u!82 &82010791355319540
 AudioSource:
   m_ObjectHideFlags: 1
@@ -187,8 +213,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allow_x_movement: 1
   allow_y_movement: 1
-  allow_sprite_rotation: 1
-  kicks_ball: 1
+  allow_sprite_rotation: 0
+  kicks_ball: 0
   sensitivity: 1
   disable_collider_after_kick: 0
   number_of_kicks: 0
