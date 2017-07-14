@@ -116,9 +116,7 @@ public class SingleMouseMovement : MonoBehaviour
                 Vector2 pos = position_delta.normalized;
                 float angleRadians = Mathf.Atan2(pos.y, pos.x);
                 float angleDegrees = angleRadians * Mathf.Rad2Deg;
-                if (angleDegrees > 1f || angleDegrees < -1f)
-                    rotation_target = angleDegrees;
-                //physics.MoveRotation(rotation_target);
+                rotation_target = angleDegrees;
             }
             physics.MoveRotation(Mathf.LerpAngle(physics.rotation, rotation_target, Time.deltaTime * 10));
         }

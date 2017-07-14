@@ -13,16 +13,36 @@ public class Round_Record
     public int ms_input_lag_of_round;
     public float round_time_taken = 0;
     public int practice_round = 0;     //  0 false, 1 true
-    public int noticed_lag = 0;        //  0 false, 1 true
+    public int num_rounds_since_survey;      // Is this the 1st round after a survey? The 2nd? 3rd?
+    //public int noticed_lag = 0;        //  0 false, 1 true
+    public List<ExtraRecordItem> survey_questions = new List<ExtraRecordItem> ();   // Noticed lag, competence, internal external, etc
 
     public virtual new string ToString()
     {
-        return trial_id + "," + participant_id + "," + round_number + "," + practice_round + "," + ms_input_lag_of_round + "," + round_time_taken + "," + noticed_lag;
+        string return_val = trial_id + "," + participant_id + "," + round_number + "," + practice_round + "," + num_rounds_since_survey + "," + ms_input_lag_of_round + "," + round_time_taken;
+        foreach (ExtraRecordItem r in survey_questions)
+        {
+            return_val += "," + r.value;
+        }
+
+        return return_val;
     }
     public virtual string FieldNames()
     {
-        return "trial_id,participant_id,round_number,practice_round,input_lag,time_for_round,noticed_lag";
+        string return_val = "trial_id,participant_id,round_number,practice_round,num_rounds_since_survey,input_lag,time_for_round";
+        foreach (ExtraRecordItem r in survey_questions)
+        {
+            return_val += "," + r.name;
+        }
+        return return_val;
     }
+}
+
+
+public class ExtraRecordItem
+{
+    public string name;
+    public string value;
 }
 
 
@@ -46,6 +66,7 @@ public class Trial : MonoBehaviour
 
     public int survey_every_x_rounds = 15;      // When should we bring up the survey menu?
     public List<GameObject> survey_objects_to_activate = new List<GameObject>();
+    public int practice_rounds_at_start = 0;
     public int practice_rounds_per_survey = 3;
 
     public TextAsset input_delay_values;        // One value per line
@@ -156,11 +177,15 @@ public class Trial : MonoBehaviour
         round_results[current_round].round_time_taken = time_for_current_round;
         round_results[current_round].round_number = current_round + 1;
         round_results[current_round].trial_id = trial_id;
+        round_results[current_round].num_rounds_since_survey = practice_rounds_per_survey > 0 ? current_round % survey_every_x_rounds : 0;
 
         // Was this a practice round?
-        if (practice_rounds_per_survey > 0
-            && current_round % survey_every_x_rounds < practice_rounds_per_survey)
+        if (practice_rounds_at_start < current_round
+            ||
+            (practice_rounds_per_survey > 0
+            && current_round % survey_every_x_rounds < practice_rounds_per_survey))
             round_results[current_round].practice_round = 1;
+
 
         // Should we bring up the survey window?
         if (current_round > 0 
@@ -181,15 +206,14 @@ public class Trial : MonoBehaviour
             g.SetActive(true);
         }
     }
-    public virtual void NoticedLagFromSurvey(bool noticedLag)
+    public virtual void AddSurveyResultsToRecords(ExtraRecordItem r)
     {
         // Add to the last X trial records that this survey applied to
         for (int x = round_results.Count - survey_every_x_rounds; x < round_results.Count; x++)
         {
-            round_results[x].noticed_lag = noticedLag ? 1 : 0;
+            round_results[x].survey_questions.Add(r);
         }
     }
-
 
     public virtual void ResetBetweenRounds()
     {
@@ -285,7 +309,7 @@ public class Trial : MonoBehaviour
         string display_string = "";
         display_string += "Round: " + current_round;
         if (enforce_time_limit)
-            display_string += "\nTime remaining: " + (time_limit - time_for_current_round);
+            display_string += "\nTime remaining: " + (int) (time_limit - time_for_current_round);
         GUI.Label(gui_rect, display_string);
     }
 }

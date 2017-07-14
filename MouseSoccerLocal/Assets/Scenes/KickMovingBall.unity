@@ -457,18 +457,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trial_id: 2
   current_round: -1
-  total_rounds: 78
+  total_rounds: 80
   time_for_current_round: 0
   total_time_for_trial: 0
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
   time_limit: 2
-  survey_every_x_rounds: 99
+  survey_every_x_rounds: 5
   survey_objects_to_activate:
   - {fileID: 518693793}
   - {fileID: 518693792}
-  practice_rounds_per_survey: 3
+  practice_rounds_at_start: 5
+  practice_rounds_per_survey: 1
   input_delay_values: {fileID: 4900000, guid: d1a1675b79aa0f44db7f46c9272e629c, type: 3}
   input_delay_per_round: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001900000019000000190000001900000019000000190000001900000019000000190000001900000019000000190000001900000019000000190000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b0000004b000000960000009600000096000000960000009600000096000000960000009600000096000000960000009600000096000000960000009600000096000000
   text_file_name: KickMovingBall.csv
@@ -3685,6 +3686,43 @@ Prefab:
         type: 2}
       propertyPath: m_ScreenMatchMode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114507436083108322, guid: 8062dde58ff6bf541a76529601be3903,
+        type: 2}
+      propertyPath: m_Text
+      value: 'On a scale of 1-7, how competent at playing this game do you feel?
+
+
+        (Press '
+      objectReference: {fileID: 0}
+    - target: {fileID: 1699268084369264, guid: 8062dde58ff6bf541a76529601be3903, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114827291962337544, guid: 8062dde58ff6bf541a76529601be3903,
+        type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 224160120960110012, guid: 8062dde58ff6bf541a76529601be3903,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.0065308
+      objectReference: {fileID: 0}
+    - target: {fileID: 224160120960110012, guid: 8062dde58ff6bf541a76529601be3903,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00040436
+      objectReference: {fileID: 0}
+    - target: {fileID: 224160120960110012, guid: 8062dde58ff6bf541a76529601be3903,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 1600
+      objectReference: {fileID: 0}
+    - target: {fileID: 224160120960110012, guid: 8062dde58ff6bf541a76529601be3903,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 1001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8062dde58ff6bf541a76529601be3903, type: 2}

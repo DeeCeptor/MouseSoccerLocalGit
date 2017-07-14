@@ -53,7 +53,7 @@ public class SoloPong : Trial
     public override void StartRound()
     {
         this.StopAllCoroutines();
-        normal_ball_max_speed = Ball.ball.max_speed;
+        Ball.ball.max_speed = normal_ball_max_speed;
 
         base.StartRound();
         round_running = false;
@@ -111,6 +111,7 @@ public class SoloPong : Trial
 
         start_beep.Play();
         round_running = true;
+        Ball.ball.max_speed = normal_ball_max_speed;
     }
     public void ResetAndShootBall(Vector2 position)
     {

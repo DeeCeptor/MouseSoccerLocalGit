@@ -2,9 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WasThereLagSurvey : MonoBehaviour 
+public class WasThereLagSurvey : SurveyPanel
+{
+
+
+	void Update () 
+	{
+        // Check for 'Y' or 'N' press
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            SubmitInfo("1");
+        }
+        else if (Input.GetKeyDown(KeyCode.N))
+        {
+            SubmitInfo("0");
+        }
+    }
+}
+
+
+// Base class. New survey panels should inherit from this class
+public class SurveyPanel : MonoBehaviour
 {
     public GameObject object_to_activate_next;
+    public string name_of_info;
+
+    public virtual void SubmitInfo(string value)
+    {
+        ExtraRecordItem r = new ExtraRecordItem();
+        r.name = name_of_info;
+        r.value = value;
+        Trial.trial.AddSurveyResultsToRecords(r);
+        Next();
+    }
 
 
     private void OnEnable()
@@ -32,20 +62,4 @@ public class WasThereLagSurvey : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-
-
-	void Update () 
-	{
-		// Check for 'Y' or 'N' press
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            Trial.trial.NoticedLagFromSurvey(true);
-            Next();
-        }
-        else if (Input.GetKeyDown(KeyCode.N))
-        {
-            Trial.trial.NoticedLagFromSurvey(false);
-            Next();
-        }
-    }
 }
