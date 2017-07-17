@@ -6,6 +6,8 @@ public class PongBall : MonoBehaviour
 {
     Rigidbody2D physics;
     float max_x_angle = 0.75f;
+    float time_since_last_bounce;
+    float bounce_score_cooldown = 0.1f;
 
 	void Start () 
 	{
@@ -18,8 +20,8 @@ public class PongBall : MonoBehaviour
 
     void Update () 
 	{
-		
-	}
+        time_since_last_bounce += Time.deltaTime;
+    }
 
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -31,14 +33,37 @@ public class PongBall : MonoBehaviour
     }
     public void HitPlayer(Collision2D collision)
     {
-        // Add a score
-        if (Trial.trial.trial_running && Trial.trial is SoloPong)
-        {
-            SoloPong pong = (SoloPong)Trial.trial;
-            pong.current_round_record.paddle_bounces += 1;
+        Debug.Log("Hit player" + collision.gameObject.name);
 
-            ScoreManager.score_manager.blue_score += 1;
+        if (Trial.trial.trial_running && time_since_last_bounce >= bounce_score_cooldown)
+        {
+            time_since_last_bounce = 0;
+
+            // Add a score
+            if (Trial.trial.trial_running && Trial.trial is SoloPong)
+            {
+                SoloPong pong = (SoloPong)Trial.trial;
+                pong.current_round_record.paddle_bounces += 1;
+
+                ScoreManager.score_manager.blue_score += 1;
+            }
+            else if (Trial.trial.trial_running && Trial.trial is TeamPong)
+            {
+                TeamPong pong = (TeamPong)Trial.trial;
+                pong.current_round_record.total_bounces += 1;
+
+                ScoreManager.score_manager.blue_score += 1;
+
+                if (collision.gameObject.GetComponent<Player>().player_id == ScoreManager.score_manager.players[0].player_id)
+                {
+                    pong.current_round_record.player_1_bounces++;
+                }
+                else
+                    pong.current_round_record.player_2_bounces++;
+            }
         }
+
+
 
         float contact_x = collision.contacts[0].point.x;
 

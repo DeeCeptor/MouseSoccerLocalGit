@@ -1,0 +1,9 @@
+trial_id,participant_id,round_number,practice_round,num_rounds_since_survey,input_lag,time_for_round,total_bounces,player_1_bounces,player_2_bounces,total_misses,player_1_misses,player_2_misses,avg_dist_missed_by,paddle_width,ball_radius,ball_speed,distance_between_players,ball_tat,total_screen_width
+4,0,1,1,0,0,3.002603,0,0,0,3,0,3,2.906942,1,0.48,0,2.5,Infinity,10
+4,0,2,1,1,50,3.012637,0,0,0,3,0,3,2.677153,1,0.48,0,2.5,Infinity,10
+4,0,1,1,0,0,10.01326,8,3,5,5,1,4,3.119472,0.5,0.25,15,2.5,0.15,10
+4,0,2,1,1,50,10.00099,10,2,8,9,3,6,2.33552,0.5,0.25,30,2.5,0.075,10
+4,0,1,1,0,0,10.00115,0,0,0,10,0,10,3.092561,0.5,0.25,15,9,0.5833333,10
+4,0,2,1,1,50,10.00447,8,0,8,12,5,7,2.33825,0.5,0.25,30,4,0.125,10
+4,0,1,1,0,0,10.00858,8,3,5,4,1,3,2.504843,0.5,0.25,15,7,0.45,10
+4,0,2,1,1,50,10.00139,10,1,9,11,2,9,3.226604,0.5,0.25,30,4,0.125,10

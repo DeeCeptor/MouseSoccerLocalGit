@@ -167,7 +167,7 @@ public class Trial : MonoBehaviour
     }
     IEnumerator WaitToFinishTrial()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.03f);
 
         FinishTrial();
     }

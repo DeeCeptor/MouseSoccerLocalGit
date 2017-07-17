@@ -76,7 +76,10 @@ public class MultiMouseManager : MonoBehaviour
             go.transform.name = "" + participant_id;
         }
         else
+        {
+            go.GetComponent<Player>().player_id = joined_devices.Count;
             go.transform.name = "" + joined_devices.Count;
+        }
 
         go.GetComponent<Player>().input = device;
     }

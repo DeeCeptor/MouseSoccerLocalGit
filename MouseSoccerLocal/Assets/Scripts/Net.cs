@@ -40,7 +40,7 @@ public class Net : MonoBehaviour
         else if (other.tag == "Ball")
         {
             ScoreManager.score_manager.ResetScore();
-            ScoreManager.score_manager.SendMessage("GoalScored");
+            ScoreManager.score_manager.SendMessage("GoalScored", this.transform.name);
         }
     }
     public void Effects()

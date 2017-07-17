@@ -100,13 +100,13 @@ public class ScoreManager : MonoBehaviour
     {
         blue_score += amount;
         Debug.Log("Blue scored " + amount);
-        SendMessage("GoalScored");
+        SendMessage("GoalScored", this.transform.name);
     }
     public void RedScored(int amount)
     {
         red_score += amount;
         Debug.Log("Red scored " + amount);
-        SendMessage("GoalScored");
+        SendMessage("GoalScored", this.transform.name);
     }
 
 

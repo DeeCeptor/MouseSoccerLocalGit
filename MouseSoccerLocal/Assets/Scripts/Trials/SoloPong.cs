@@ -12,12 +12,6 @@ public class SoloPongRecord : Round_Record
     public float avg_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
 
 
-    public SoloPongRecord()
-    {
-
-    }
-
-
     public override string ToString()
     {
         return base.ToString() + "," + paddle_bounces + "," + misses + "," + avg_missed_by;
@@ -34,8 +28,6 @@ public class SoloPong : Trial
     public Transform position_to_spawn_ball;
     public Transform position_to_spawn_player;
     public Text timer_text;
-    //public List<SoloKickIntoNetRecord> round_results = new List<SoloKickIntoNetRecord>();  // Each round is an entry in this list
-    //bool successful_this_round = false;
     public SoloPongRecord current_round_record;
 
     float normal_ball_max_speed;
@@ -167,9 +159,6 @@ public class SoloPong : Trial
         ResetAndShootBall(position_to_spawn_ball.transform.localPosition);
         start_beep.Play();
         StartCoroutine(StopThenSpeedUpBall());
-        /*
-        if (trial_running)
-            NextRound();*/
     }
     IEnumerator StopThenSpeedUpBall()
     {
