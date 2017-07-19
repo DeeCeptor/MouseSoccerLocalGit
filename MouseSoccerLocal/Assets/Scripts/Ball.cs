@@ -18,8 +18,9 @@ public class Ball : MonoBehaviour
     public float max_speed = 20f;
 
     public bool constant_velocity = false;
+    public bool reset_trail_colour_on_reset = true;
 
-    Collider2D collider;
+    Collider2D _collider;
 
 	void Awake () 
 	{
@@ -27,7 +28,7 @@ public class Ball : MonoBehaviour
         physics = this.GetComponent<Rigidbody2D>();
         //anim = this.GetComponent<Animator>();
         trail = this.GetComponent<TrailRenderer>();
-        collider = this.GetComponent<Collider2D>();
+        _collider = this.GetComponent<Collider2D>();
         sprite = this.GetComponent<SpriteRenderer>();
     }
     private void Start()
@@ -42,8 +43,11 @@ public class Ball : MonoBehaviour
         physics.angularVelocity = 0;
         this.transform.position = position;
 
-        GetComponent<TrailRenderer>().startColor = Color.white;
-        GetComponent<TrailRenderer>().endColor = Color.white;
+        if (reset_trail_colour_on_reset)
+        {
+            GetComponent<TrailRenderer>().startColor = Color.white;
+            GetComponent<TrailRenderer>().endColor = Color.white;
+        }
     }
 
 
@@ -58,13 +62,16 @@ public class Ball : MonoBehaviour
             sprite.color = c;
         }
 
-        collider.enabled = enable_colls;
+        _collider.enabled = enable_colls;
     }
 
 
     private void FixedUpdate()
     {
         // Clamp max speed
+        if (physics.velocity == Vector2.zero)
+            return;
+
         if (constant_velocity)
         {
             physics.velocity = physics.velocity.normalized * max_speed;

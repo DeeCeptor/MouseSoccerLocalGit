@@ -87,10 +87,12 @@ public class ScoreManager : MonoBehaviour
         switch (team)
         {
             case Team.Red:
-                player.GetComponent<SpriteRenderer>().sprite = red_sprite;
+                if (player.GetComponent<SpriteRenderer>() != null)
+                    player.GetComponent<SpriteRenderer>().sprite = red_sprite;
                 break;
             case Team.Blue:
-                player.GetComponent<SpriteRenderer>().sprite = blue_sprite;
+                if (player.GetComponent<SpriteRenderer>() != null)
+                    player.GetComponent<SpriteRenderer>().sprite = blue_sprite;
                 break;
         }
     }

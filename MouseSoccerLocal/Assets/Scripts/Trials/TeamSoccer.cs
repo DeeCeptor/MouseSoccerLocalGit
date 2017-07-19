@@ -59,7 +59,7 @@ public class TeamSoccer : Trial
         if (Ball.ball == null)
         {
             // Spawn new ball
-            GameObject go = ScoreManager.score_manager.SpawnBall(position_to_spawn_ball.transform.localPosition);
+            ScoreManager.score_manager.SpawnBall(position_to_spawn_ball.transform.localPosition);
         }
         else
             // Ball position
