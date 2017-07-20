@@ -13,20 +13,26 @@ public class TeamPongRecord : Round_Record
     public int player_1_misses, player_2_misses;  // Which player missed the ball? 1 = Top of screen, 0 = Bottom of screen
     public float avg_dist_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
     public float paddle_width, ball_radius, ball_speed, distance_between_players;
-    public float ball_tat;  // Ball turn around time; how much time the player has to move before the ball reaches one end. distance (-radius/2) / ball_speed
+    public float min_ball_tat;  // Ball turn around time; how much time the player has to move before the ball reaches one end. distance (-radius/2) / ball_speed
+                            // SHORTEST POSSIBLE TIME IS A STRAIGHT LINE. Most shots won't be a straight line, so they will have ever so slightly longer to react (+0.01/0.02ms)
+        // Add tat player had given on a miss
     public float total_screen_width;
+    public float paddle_takes_percent_of_screen;
+
 
     public override string ToString()
     {
         return base.ToString() + "," + total_bounces + "," + player_1_bounces + "," + player_2_bounces
             + "," + total_misses + "," + player_1_misses + "," + player_2_misses + "," + avg_dist_missed_by 
-            + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_between_players + "," + ball_tat + "," + total_screen_width;
+            + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_between_players + "," + min_ball_tat
+            + "," + total_screen_width + "," + paddle_takes_percent_of_screen;
     }
     public override string FieldNames()
     {
-        return base.FieldNames() + ",total_bounces,player_1_bounces,player_2_bounces" +
-            ",total_misses,player_1_misses,player_2_misses,avg_dist_missed_by"
-            + ",paddle_width,ball_radius,ball_speed,distance_between_players,ball_tat,total_screen_width";
+        return base.FieldNames() + ",total_bounces,player_1_bounces,player_2_bounces"
+            + ",total_misses,player_1_misses,player_2_misses,avg_dist_missed_by"
+            + ",paddle_width,ball_radius,ball_speed,distance_between_players,min_ball_tat"
+            + ",total_screen_width, paddle_takes_percent_of_screen";
     }
 }
 
@@ -168,11 +174,11 @@ public class TeamPong : Trial
         current_round_record.distance_between_players = Mathf.Abs(ScoreManager.score_manager.players[0].transform.position.y) * 2;
         current_round_record.ball_speed = current_ball_speed_of_round;
 
-        // Distance between players - (radius of ball * 4, because radius is half with the diameter, so 2 radii gives a full length of ball)
+        // Distance between players - (radius of ball * 2, because radius is half with the diameter, so 2 radii gives a full length of ball)
         float total_distance_needed = current_round_record.distance_between_players - (current_round_record.ball_radius * 2);
-        current_round_record.ball_tat = total_distance_needed / current_ball_speed_of_round;
-
-        current_round_record.total_screen_width = 2f * Camera.main.orthographicSize;
+        current_round_record.min_ball_tat = total_distance_needed / current_ball_speed_of_round;
+        current_round_record.total_screen_width = CameraRect.camWidth;
+        current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
 
         base.FinishRound();
     }

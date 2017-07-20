@@ -540,7 +540,7 @@ MonoBehaviour:
   - {fileID: 1163522826}
   practice_rounds_at_start: 0
   practice_rounds_per_survey: 3
-  input_delay_values: {fileID: 4900000, guid: dba76348007bd9c41be8d0629e351f67, type: 3}
+  input_delay_values: {fileID: 4900000, guid: 6f0d060afb34f4b4a9355e357ae64cf5, type: 3}
   input_delay_per_round: 
   text_file_name: Long-KickStationaryBall.csv
   timer_beeps: {fileID: 1695031112}

@@ -8,6 +8,8 @@ public class PongBall : MonoBehaviour
     public float max_x_angle = 0.75f;
     float time_since_last_bounce;
     float bounce_score_cooldown = 0.1f;
+    float time_of_last_collision;
+
 
 	void Start () 
 	{
@@ -33,7 +35,6 @@ public class PongBall : MonoBehaviour
     }
     public void HitPlayer(Collider2D collision)
     {
-        Debug.Log("Hit player" + collision.gameObject.name);
         if (time_since_last_bounce < bounce_score_cooldown )
             return;
 
@@ -69,7 +70,7 @@ public class PongBall : MonoBehaviour
 
 
         float contact_x = this.transform.position.x;
-        // Debug.Log(collision.contacts[0].point.x + " , position " +);
+
         // Figure out where we contacted the paddle
         float difference = Mathf.Abs(Mathf.Abs(collision.gameObject.transform.position.x) - Mathf.Abs(contact_x));
         float sign = collision.gameObject.transform.position.x > contact_x ? -1.0f : 1.0f;
@@ -79,32 +80,44 @@ public class PongBall : MonoBehaviour
         // https://gamedev.stackexchange.com/questions/4253/in-pong-how-do-you-calculate-the-balls-direction-when-it-bounces-off-the-paddl
         // Add slight angle to ball based on where we collided with paddle
         Vector2 new_dir = new Vector2(signed_normalized_difference * max_x_angle, -Mathf.Sign(physics.velocity.y) * 0.5f).normalized;
-        
-        // Do a raycast see if this intersects left or right wall
-        RaycastHit2D r = Physics2D.Raycast(this.transform.position, new_dir, 30, LayerMask.GetMask(new string[] { "Walls" }));
 
-        if (r.transform != null)
-            Debug.LogWarning(r.transform.name);
-
-        // If it does, simply inverse X direction
-        if (r.transform != null && (r.transform.name.Contains("Left") || r.transform.name.Contains("Right")))
+        if (Trial.trial is TeamPong)
         {
-            Debug.LogWarning("Changing dir, hit " + r.transform.name);
-            new_dir.x = -new_dir.x;
+            // Do a raycast see if this intersects left or right wall
+            RaycastHit2D r = Physics2D.Raycast(this.transform.position, new_dir, 30, LayerMask.GetMask(new string[] { "Walls" }));
+
+            if (r.transform != null)
+                Debug.LogWarning(r.transform.name);
+
+            // If it does, simply inverse X direction
+            if (r.transform != null && (r.transform.name.Contains("Left") || r.transform.name.Contains("Right")))
+            {
+                Debug.LogWarning("Changing dir, hit " + r.transform.name);
+                new_dir.x = -new_dir.x;
+            }
         }
 
         physics.velocity = new_dir * Ball.ball.max_speed;
+
+        RecordBounce("Hit player.");
     }
 
 
-    /*
+    public void RecordBounce(string prepend_msg)
+    {
+        Debug.Log(prepend_msg + " Time since last collision " + (Time.time - time_of_last_collision), this.gameObject);
+        time_of_last_collision = Time.time;
+    }
+
+    
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Wall")
         {
-            HitPlayer(collision);
+            RecordBounce("Hit wall.");
         }
     }
+    /*
     public void HitPlayer(Collision2D collision)
     {
         Debug.Log("Hit player" + collision.gameObject.name);

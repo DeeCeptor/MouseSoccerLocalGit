@@ -10,15 +10,23 @@ public class SoloPongRecord : Round_Record
     public int paddle_bounces = 0;      // How many times did the ball bounce off the paddle? The higher score, the better
     public int misses;          // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
     public float avg_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
+    public float paddle_width, ball_radius, ball_speed, distance_to_top_wall;
+    public float min_ball_tat;  // Ball turn around time; how much time the player has to move before the ball reaches one end. distance (-radius/2) / ball_speed
+    public float total_screen_width;
+    public float paddle_takes_percent_of_screen;
 
 
     public override string ToString()
     {
-        return base.ToString() + "," + paddle_bounces + "," + misses + "," + avg_missed_by;
+        return base.ToString() + "," + paddle_bounces + "," + misses + "," + avg_missed_by
+            + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_to_top_wall + "," + min_ball_tat
+            + "," + total_screen_width + "," + paddle_takes_percent_of_screen;
     }
     public override string FieldNames()
     {
-        return base.FieldNames() + ",paddle_bounces,misses,avg_missed_by";
+        return base.FieldNames() + ",paddle_bounces,misses,avg_missed_by"
+                        + ",paddle_width,ball_radius,ball_speed,distance_to_top_wall,ball_tat"
+                        + ",total_screen_width,paddle_takes_percent_of_screen";
     }
 }
 
@@ -112,11 +120,30 @@ public class SoloPong : Trial
         Ball.ball.physics.velocity = new Vector2(UnityEngine.Random.Range(-0.5f, 0.5f), 0.5f);
     }
 
+
     public override void ResetBetweenRounds()
     {
         base.ResetBetweenRounds();
 
         current_round_record = new SoloPongRecord();
+    }
+
+
+    public override void FinishRound()
+    {
+        // Pong specific calculations
+        current_round_record.ball_radius = Ball.ball.GetComponent<CircleCollider2D>().radius * Ball.ball.transform.localScale.x;
+        current_round_record.paddle_width = ScoreManager.score_manager.players[0].transform.localScale.x;
+        current_round_record.distance_to_top_wall = Camera.main.orthographicSize / 2 + Mathf.Abs(ScoreManager.score_manager.players[0].transform.position.y);
+        current_round_record.ball_speed = normal_ball_max_speed;
+
+        // Distance between players - (radius of ball * 4, because radius is half with the diameter, so 2 radii gives a full length of ball)
+        float total_distance_needed = current_round_record.distance_to_top_wall - (current_round_record.ball_radius * 2);
+        current_round_record.min_ball_tat = total_distance_needed / normal_ball_max_speed;
+        current_round_record.total_screen_width = CameraRect.camWidth;
+        current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
+
+        base.FinishRound();
     }
 
 

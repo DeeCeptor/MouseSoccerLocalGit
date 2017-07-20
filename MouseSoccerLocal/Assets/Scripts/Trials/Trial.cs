@@ -12,7 +12,7 @@ public class Round_Record
     public int round_number;
     public int ms_input_lag_of_round;
     public float round_time_taken = 0;
-    public int practice_round = 0;     //  0 false, 1 true
+    public int practice_round = 0;     //  0 false: not a practice round, 1 true: is a practice round
     public int num_rounds_since_survey;      // Is this the 1st round after a survey? The 2nd? 3rd?
     //public int noticed_lag = 0;        //  0 false, 1 true
     public List<ExtraRecordItem> survey_questions = new List<ExtraRecordItem> ();   // Noticed lag, competence, internal external, etc
@@ -180,10 +180,9 @@ public class Trial : MonoBehaviour
         round_results[current_round].num_rounds_since_survey = practice_rounds_per_survey > 0 ? current_round % survey_every_x_rounds : 0;
 
         // Was this a practice round?
-        if (practice_rounds_at_start < current_round
-            ||
-            (practice_rounds_per_survey > 0
-            && current_round % survey_every_x_rounds < practice_rounds_per_survey))
+        if ( (practice_rounds_at_start != 0 && practice_rounds_at_start < current_round)
+                ||
+             (practice_rounds_per_survey > 0 && current_round % survey_every_x_rounds < practice_rounds_per_survey) )
             round_results[current_round].practice_round = 1;
 
 
