@@ -24,7 +24,6 @@ public class Round_Record
         {
             return_val += "," + r.value;
         }
-
         return return_val;
     }
     public virtual string FieldNames()
@@ -35,6 +34,17 @@ public class Round_Record
             return_val += "," + r.name;
         }
         return return_val;
+    }
+
+
+    public static string ListToString<T>(List<T> a_list)
+    {
+        List<string> strings = new List<string> ();
+        for (int x = 0; x < a_list.Count; x++)
+        {
+            strings.Add(a_list[x].ToString());
+        }
+        return String.Join(":", strings.ToArray());
     }
 }
 
@@ -55,6 +65,7 @@ public class Trial : MonoBehaviour
     public List<Round_Record> round_results = new List<Round_Record>();
 
     public int trial_id = 0;    // What task are we doing? Stationary kick into net is 1, moving kick into net is 2, etc
+    public int number_players_required = 1;
     public int current_round = -1;   // Current round
     public int total_rounds = 0;    // How many rounds are we aiming for?
     public float time_for_current_round;    // In seconds, elapsed time of current trial
@@ -192,6 +203,7 @@ public class Trial : MonoBehaviour
             && (current_round + 1) % survey_every_x_rounds == 0)
         {
             ActivateSurvey();
+            ScoreManager.score_manager.ResetScore();
         }
     }
 
@@ -291,7 +303,7 @@ public class Trial : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Space) && !trial_running)
+            if (Input.GetKeyDown(KeyCode.Space) && !trial_running && ScoreManager.score_manager.players.Count == number_players_required)
                 StartTrial();
         }
 	}
@@ -305,10 +317,13 @@ public class Trial : MonoBehaviour
 
         if (Time.timeScale <= 0 && !trial_running)
             return;
+
         string display_string = "";
         display_string += "Round: " + current_round;
+
         if (enforce_time_limit)
             display_string += "\nTime remaining: " + (int) (time_limit - time_for_current_round);
+
         GUI.Label(gui_rect, display_string);
     }
 }

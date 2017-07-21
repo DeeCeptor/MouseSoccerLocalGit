@@ -582,6 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trial_id: 4
+  number_players_required: 2
   current_round: -1
   total_rounds: 5
   time_for_current_round: 0
@@ -589,7 +590,7 @@ MonoBehaviour:
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
-  time_limit: 2
+  time_limit: 6
   survey_every_x_rounds: 99
   survey_objects_to_activate: []
   practice_rounds_at_start: 0

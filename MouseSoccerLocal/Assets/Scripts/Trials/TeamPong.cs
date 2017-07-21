@@ -12,10 +12,12 @@ public class TeamPongRecord : Round_Record
     public int total_misses;          // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
     public int player_1_misses, player_2_misses;  // Which player missed the ball? 1 = Top of screen, 0 = Bottom of screen
     public float avg_dist_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
+    public float bounces_per_miss;      // total_bounces / total_misses
     public float paddle_width, ball_radius, ball_speed, distance_between_players;
     public float min_ball_tat;  // Ball turn around time; how much time the player has to move before the ball reaches one end. distance (-radius/2) / ball_speed
-                            // SHORTEST POSSIBLE TIME IS A STRAIGHT LINE. Most shots won't be a straight line, so they will have ever so slightly longer to react (+0.01/0.02ms)
-        // Add tat player had given on a miss
+                                // SHORTEST POSSIBLE TIME IS A STRAIGHT LINE. Most shots won't be a straight line, so they will have ever so slightly longer to react (+0.01/0.02ms)
+    public List<float> time_needed_on_misses = new List<float> ();      // Records how much time they had on each miss
+    public float avg_time_needed_on_miss;   // When a ball is missed (and score), this is the average amount of time the player had to react
     public float total_screen_width;
     public float paddle_takes_percent_of_screen;
 
@@ -23,15 +25,17 @@ public class TeamPongRecord : Round_Record
     public override string ToString()
     {
         return base.ToString() + "," + total_bounces + "," + player_1_bounces + "," + player_2_bounces
-            + "," + total_misses + "," + player_1_misses + "," + player_2_misses + "," + avg_dist_missed_by 
-            + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_between_players + "," + min_ball_tat
+            + "," + total_misses + "," + player_1_misses + "," + player_2_misses + "," + avg_dist_missed_by + "," + bounces_per_miss
+            + "," + Round_Record.ListToString<float>(time_needed_on_misses) + "," + avg_time_needed_on_miss + "," + min_ball_tat
+            + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_between_players
             + "," + total_screen_width + "," + paddle_takes_percent_of_screen;
     }
     public override string FieldNames()
     {
         return base.FieldNames() + ",total_bounces,player_1_bounces,player_2_bounces"
-            + ",total_misses,player_1_misses,player_2_misses,avg_dist_missed_by"
-            + ",paddle_width,ball_radius,ball_speed,distance_between_players,min_ball_tat"
+            + ",total_misses,player_1_misses,player_2_misses,avg_dist_missed_by,bounces_per_miss"
+            + ",time_needed_on_misses,avg_time_needed_on_miss,min_ball_tat"
+            + ",paddle_width,ball_radius,ball_speed,distance_between_players"
             + ",total_screen_width, paddle_takes_percent_of_screen";
     }
 }
@@ -54,9 +58,6 @@ public class TeamPong : Trial
 
     public override void StartTrial()
     {
-        if (ScoreManager.score_manager.players.Count != 2)
-            return;
-
         PopulatePongSettings();
         base.StartTrial();
     }
@@ -82,6 +83,8 @@ public class TeamPong : Trial
 
     public override void StartRound()
     {
+        ScoreManager.score_manager.ResetScore();
+
         current_ball_speed_of_round = ball_speeds[current_round];
         Ball.ball.max_speed = current_ball_speed_of_round;
         Ball.ball.Reset(Vector2.zero);
@@ -89,17 +92,20 @@ public class TeamPong : Trial
         base.StartRound();
         round_running = false;
 
-        // Spawn ball rolling in right direction
-        if (Ball.ball == null)
-        {
-            // Spawn new ball
-            ScoreManager.score_manager.SpawnBall(position_to_spawn_ball.transform.localPosition);
-        }
-        else
-        {
-            // Ball position
-            Ball.ball.Reset(position_to_spawn_ball.transform.position);
-        }
+        // Put player in correct spot
+        ScoreManager.score_manager.players[0].transform.position = new Vector2(0, -distances_between_players[current_round] / 2);
+        positions_to_spawn_player[0].transform.position = ScoreManager.score_manager.players[0].transform.position;
+        ScoreManager.score_manager.players[1].transform.position = new Vector2(0, distances_between_players[current_round] / 2);
+        positions_to_spawn_player[1].transform.position = ScoreManager.score_manager.players[1].transform.position;
+        ScoreManager.score_manager.players[1].transform.Rotate(new Vector3(0, 0, 180));     // Flip top player around 180 so collider is properly aligned
+
+        // Ensure player has a collider enabled
+        ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().ResetKicks();
+        ScoreManager.score_manager.players[1].GetComponent<SingleMouseMovement>().ResetKicks();
+
+        Ball.ball.SetCollisions(false);
+        SetPlayerColliders(true);
+
 
         // Get the random velocity of ball
         initial_ball_velocity = GetNewRandomBallVelocity();
@@ -111,17 +117,22 @@ public class TeamPong : Trial
         current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
         current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
 
-        // Put player in correct spot
-        ScoreManager.score_manager.players[0].transform.position = new Vector2(0, -distances_between_players[current_round] / 2);
-        ScoreManager.score_manager.players[1].transform.position = new Vector2(0, distances_between_players[current_round] / 2);
-        ScoreManager.score_manager.players[1].transform.Rotate(new Vector3(0, 0, 180));     // Flip top player around 180 so collider is properly aligned
+        // Pong specific calculations
+        current_round_record.ball_radius = Ball.ball.GetComponent<CircleCollider2D>().radius * Ball.ball.transform.localScale.x;
+        current_round_record.paddle_width = ScoreManager.score_manager.players[0].transform.localScale.x;
+        current_round_record.distance_between_players = Mathf.Abs(ScoreManager.score_manager.players[0].transform.position.y) * 2;
+        current_round_record.ball_speed = current_ball_speed_of_round;
 
-        // Ensure player has a collider enabled
-        ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().ResetKicks();
-        ScoreManager.score_manager.players[1].GetComponent<SingleMouseMovement>().ResetKicks();
+        // Distance between players - (radius of ball * 2, because radius is half with the diameter, so 2 radii gives a full length of ball)
+        float total_distance_needed = current_round_record.distance_between_players - (current_round_record.ball_radius * 2);
+        current_round_record.min_ball_tat = total_distance_needed / current_ball_speed_of_round;
+        current_round_record.total_screen_width = CameraRect.camWidth;
+        current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
 
-        Ball.ball.SetCollisions(false);
-        SetPlayerColliders(true);
+        Debug.Log("Min tat: " + current_round_record.min_ball_tat 
+            + " dist needed: " + total_distance_needed 
+            + " dist between players: " + current_round_record.distance_between_players
+            + " ball speed: " + current_ball_speed_of_round);
 
         StopShootAfterGoal();
         StartCoroutine(StartRoundIn());
@@ -163,22 +174,13 @@ public class TeamPong : Trial
         Ball.ball.physics.velocity = initial_ball_velocity;
         starting_ball_path.gameObject.SetActive(false);
         SetPlayerColliders(true);
+        Ball.ball.GetComponent<PongBall>().time_of_last_collision = Time.time;
     }
 
 
     public override void FinishRound()
     {
-        // Pong specific calculations
-        current_round_record.ball_radius = Ball.ball.GetComponent<CircleCollider2D>().radius * Ball.ball.transform.localScale.x;
-        current_round_record.paddle_width = ScoreManager.score_manager.players[0].transform.localScale.x;
-        current_round_record.distance_between_players = Mathf.Abs(ScoreManager.score_manager.players[0].transform.position.y) * 2;
-        current_round_record.ball_speed = current_ball_speed_of_round;
-
-        // Distance between players - (radius of ball * 2, because radius is half with the diameter, so 2 radii gives a full length of ball)
-        float total_distance_needed = current_round_record.distance_between_players - (current_round_record.ball_radius * 2);
-        current_round_record.min_ball_tat = total_distance_needed / current_ball_speed_of_round;
-        current_round_record.total_screen_width = CameraRect.camWidth;
-        current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
+        current_round_record.bounces_per_miss = (float) current_round_record.total_bounces / (float) current_round_record.total_misses;
 
         base.FinishRound();
     }
@@ -204,6 +206,12 @@ public class TeamPong : Trial
         {
             if (r.avg_dist_missed_by != 0)
                 r.avg_dist_missed_by = r.avg_dist_missed_by / r.total_misses;
+            
+            foreach (float time_needed in r.time_needed_on_misses)
+            {
+                r.avg_time_needed_on_miss += time_needed;
+            }
+            r.avg_time_needed_on_miss = r.avg_time_needed_on_miss / r.time_needed_on_misses.Count;
         }
 
         // Record our findings in a text file
@@ -269,7 +277,6 @@ public class TeamPong : Trial
         }
 
         // Shoot ball
-        Debug.Log("StopThenSpeedUpBall");
         ResetAndShootBall(position_to_spawn_ball.transform.localPosition);
     }
     public void StopShootAfterGoal()
@@ -283,8 +290,9 @@ public class TeamPong : Trial
 	{
         //StartTrial();
 	}
-	
 
+
+    bool ball_was_below_before = false;
 	public override void Update () 
 	{
         base.Update();
@@ -294,8 +302,18 @@ public class TeamPong : Trial
             (Ball.ball.transform.position.y <= ScoreManager.score_manager.players[0].transform.position.y
             || Ball.ball.transform.position.y >= ScoreManager.score_manager.players[1].transform.position.y))
         {
+            if (!ball_was_below_before)
+            {
+                // How much time did they have to react from when ball the other paddle (or from starting position in middle, from which there is a line showing the trajectory)
+                float time_they_to_had_react = Ball.ball.GetComponent<PongBall>().TimeSinceLastCollision();
+                Debug.Log("They had " + time_they_to_had_react + " seconds to react to that shot. TaT: " + current_round_record.min_ball_tat + " Cur time: " + Time.time + " Last collision time: " + Ball.ball.GetComponent<PongBall>().time_of_last_collision);
+                current_round_record.time_needed_on_misses.Add(time_they_to_had_react);
+            }
+            ball_was_below_before = true;
             SetPlayerColliders(false);
         }
+        else
+            ball_was_below_before = false;
 	}
 
     public void SetPlayerColliders(bool enabled)

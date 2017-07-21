@@ -7,9 +7,10 @@ using UnityEngine.UI;
 
 public class SoloPongRecord : Round_Record
 {
-    public int paddle_bounces = 0;      // How many times did the ball bounce off the paddle? The higher score, the better
-    public int misses;          // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
+    public int total_bounces;       // How many times did the ball bounce off the paddle? The higher score, the better
+    public int total_misses;        // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
     public float avg_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
+    public float bounces_per_miss;      // total_bounces / total_misses
     public float paddle_width, ball_radius, ball_speed, distance_to_top_wall;
     public float min_ball_tat;  // Ball turn around time; how much time the player has to move before the ball reaches one end. distance (-radius/2) / ball_speed
     public float total_screen_width;
@@ -18,13 +19,13 @@ public class SoloPongRecord : Round_Record
 
     public override string ToString()
     {
-        return base.ToString() + "," + paddle_bounces + "," + misses + "," + avg_missed_by
+        return base.ToString() + "," + total_bounces + "," + total_misses + "," + avg_missed_by
             + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_to_top_wall + "," + min_ball_tat
             + "," + total_screen_width + "," + paddle_takes_percent_of_screen;
     }
     public override string FieldNames()
     {
-        return base.FieldNames() + ",paddle_bounces,misses,avg_missed_by"
+        return base.FieldNames() + ",total_bounces,total_misses,avg_missed_by"
                         + ",paddle_width,ball_radius,ball_speed,distance_to_top_wall,ball_tat"
                         + ",total_screen_width,paddle_takes_percent_of_screen";
     }
@@ -40,6 +41,7 @@ public class SoloPong : Trial
 
     float normal_ball_max_speed;
 
+
     public override void StartTrial()
     {
         normal_ball_max_speed = Ball.ball.max_speed;
@@ -52,23 +54,13 @@ public class SoloPong : Trial
 
     public override void StartRound()
     {
+        ScoreManager.score_manager.ResetScore();
+
         this.StopAllCoroutines();
         Ball.ball.max_speed = normal_ball_max_speed;
 
         base.StartRound();
         round_running = false;
-
-        // Spawn ball rolling in right direction
-        if (Ball.ball == null)
-        {
-            // Spawn new ball
-            ScoreManager.score_manager.SpawnBall(position_to_spawn_ball.transform.localPosition);
-        }
-        else
-        {
-            // Ball position
-            Ball.ball.Reset(position_to_spawn_ball.transform.position);
-        }
 
         // Add entry to list for whether we were successful or not
         round_results.Add(current_round_record);
@@ -79,7 +71,6 @@ public class SoloPong : Trial
         ScoreManager.score_manager.players[0].transform.position = position_to_spawn_player.transform.position;
         // Ensure player has a collider enabled
         ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().ResetKicks();
-        //ScoreManager.score_manager.players[0].GetComponent<SingleMouseMovement>().enabled = false;
         Ball.ball.SetCollisions(false);
 
         StartCoroutine(StartRoundIn());
@@ -143,6 +134,10 @@ public class SoloPong : Trial
         current_round_record.total_screen_width = CameraRect.camWidth;
         current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
 
+        current_round_record.bounces_per_miss = current_round_record.total_bounces / current_round_record.total_misses;
+
+        ScoreManager.score_manager.ResetScore();
+
         base.FinishRound();
     }
 
@@ -155,7 +150,7 @@ public class SoloPong : Trial
         foreach (SoloPongRecord r in round_results)
         {
             if (r.avg_missed_by != 0)
-                r.avg_missed_by = r.avg_missed_by / r.misses;
+                r.avg_missed_by = r.avg_missed_by / r.total_misses;
         }
 
         // Record our findings in a text file
@@ -180,8 +175,8 @@ public class SoloPong : Trial
         // Calculate how much the ball missed by
         float missed_by = Ball.ball.GetComponent<PongBall>().DistanceFromBall(ScoreManager.score_manager.players[0].transform.position);
         current_round_record.avg_missed_by += missed_by;
-        current_round_record.misses += 1;
-        Debug.Log("Ball missed by " + missed_by + ", total misses: " + current_round_record.misses);
+        current_round_record.total_misses += 1;
+        Debug.Log("Ball missed by " + missed_by + ", total misses: " + current_round_record.total_misses);
 
         ResetAndShootBall(position_to_spawn_ball.transform.localPosition);
         start_beep.Play();

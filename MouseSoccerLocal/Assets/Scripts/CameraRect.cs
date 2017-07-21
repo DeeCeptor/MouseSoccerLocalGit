@@ -24,21 +24,22 @@ public class CameraRect : MonoBehaviour
         cam = this.GetComponent<Camera>();
 
         CalculateScreenDimensions();
-
+    }
+    private void Start()
+    {
         var bottomLeft = cam.ScreenToWorldPoint(Vector3.zero);
         var topRight = cam.ScreenToWorldPoint(new Vector3(
             cam.pixelWidth, cam.pixelHeight));
 
-        camera_rect = new Rect(
-            bottomLeft.x,
-            bottomLeft.y,
-            topRight.x - bottomLeft.x,
-            topRight.y - bottomLeft.y);
+        camera_rect = new Rect(bottomLeft.x,
+                                bottomLeft.y,
+                                topRight.x - bottomLeft.x,
+                                topRight.y - bottomLeft.y);
 
         arena_rect = new Rect(bottomleft.transform.position.x,
-            bottomleft.transform.position.y,
-            topright.transform.position.x - bottomleft.transform.position.x,
-            topright.transform.position.y - bottomleft.transform.position.y);
+                                bottomleft.transform.position.y,
+                                topright.transform.position.x - bottomleft.transform.position.x,
+                                topright.transform.position.y - bottomleft.transform.position.y);
     }
 
 

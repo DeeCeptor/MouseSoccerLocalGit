@@ -190,13 +190,14 @@ public class ScoreManager : MonoBehaviour
 
     void OnGUI()
     {
-        if (Application.isEditor && debug_view)
+        if (true || Application.isEditor && debug_view)
         {
             float ms_per_frame = deltaTime * 1000.0f;
             float fps = 1.0f / deltaTime;
             string fpstext = string.Format("ms per frame: {0:0.0} ms, fps: ({1:0.})", ms_per_frame, fps);
             if (GlobalSettings.InputDelayFrames > 0)
                 fpstext += "\nIntroduced Input Delay (ms): " + GlobalSettings.InputDelayFrames * Time.fixedDeltaTime * GlobalSettings.ms_per_second;
+
             GUI.Label(new Rect(Vector2.zero, Vector2.one * 200), "Average ms per fixed update: " + average_ms_per_frame + "\n" + fpstext);
         }
     }

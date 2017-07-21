@@ -285,6 +285,5 @@ public class SingleMouseMovement : MonoBehaviour
     public void ResetInputQueues()
     {
         input_queue.Clear();
-        Debug.Log("Resetting input queue");
     }
 }

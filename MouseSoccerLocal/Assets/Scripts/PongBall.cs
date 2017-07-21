@@ -6,9 +6,8 @@ public class PongBall : MonoBehaviour
 {
     Rigidbody2D physics;
     public float max_x_angle = 0.75f;
-    float time_since_last_bounce;
     float bounce_score_cooldown = 0.1f;
-    float time_of_last_collision;
+    public float time_of_last_collision;
 
 
 	void Start () 
@@ -22,7 +21,6 @@ public class PongBall : MonoBehaviour
 
     void Update () 
 	{
-        time_since_last_bounce += Time.deltaTime;
     }
 
 
@@ -35,20 +33,18 @@ public class PongBall : MonoBehaviour
     }
     public void HitPlayer(Collider2D collision)
     {
-        if (time_since_last_bounce < bounce_score_cooldown )
+        if (TimeSinceLastCollision() < bounce_score_cooldown)
             return;
 
         collision.gameObject.GetComponent<AudioSource>().Play();
 
         if (Trial.trial.trial_running)
         {
-            time_since_last_bounce = 0;
-
             // Add a score
             if (Trial.trial.trial_running && Trial.trial is SoloPong)
             {
                 SoloPong pong = (SoloPong)Trial.trial;
-                pong.current_round_record.paddle_bounces += 1;
+                pong.current_round_record.total_bounces += 1;
 
                 ScoreManager.score_manager.blue_score += 1;
             }
@@ -66,6 +62,8 @@ public class PongBall : MonoBehaviour
                 else
                     pong.current_round_record.player_2_bounces++;
             }
+
+            RecordBounce("Hit player.");
         }
 
 
@@ -92,14 +90,18 @@ public class PongBall : MonoBehaviour
             // If it does, simply inverse X direction
             if (r.transform != null && (r.transform.name.Contains("Left") || r.transform.name.Contains("Right")))
             {
-                Debug.LogWarning("Changing dir, hit " + r.transform.name);
+                //Debug.LogWarning("Changing dir, hit " + r.transform.name, this.gameObject);
                 new_dir.x = -new_dir.x;
             }
         }
 
         physics.velocity = new_dir * Ball.ball.max_speed;
+    }
 
-        RecordBounce("Hit player.");
+
+    public float TimeSinceLastCollision()
+    {
+        return Time.time - time_of_last_collision;
     }
 
 
