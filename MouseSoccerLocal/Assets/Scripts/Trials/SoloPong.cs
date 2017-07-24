@@ -58,6 +58,7 @@ public class SoloPong : Trial
 
         this.StopAllCoroutines();
         Ball.ball.max_speed = normal_ball_max_speed;
+        Ball.ball.Reset(position_to_spawn_ball.transform.position);
 
         base.StartRound();
         round_running = false;
@@ -125,6 +126,9 @@ public class SoloPong : Trial
         // Pong specific calculations
         current_round_record.ball_radius = Ball.ball.GetComponent<CircleCollider2D>().radius * Ball.ball.transform.localScale.x;
         current_round_record.paddle_width = ScoreManager.score_manager.players[0].transform.localScale.x;
+
+        //asd
+        // Orthographic size not orthographic size/2
         current_round_record.distance_to_top_wall = Camera.main.orthographicSize / 2 + Mathf.Abs(ScoreManager.score_manager.players[0].transform.position.y);
         current_round_record.ball_speed = normal_ball_max_speed;
 
@@ -134,7 +138,7 @@ public class SoloPong : Trial
         current_round_record.total_screen_width = CameraRect.camWidth;
         current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
 
-        current_round_record.bounces_per_miss = current_round_record.total_bounces / current_round_record.total_misses;
+        current_round_record.bounces_per_miss = current_round_record.total_bounces / current_round_record.total_misses == 0 ? 0 : current_round_record.total_misses;
 
         ScoreManager.score_manager.ResetScore();
 

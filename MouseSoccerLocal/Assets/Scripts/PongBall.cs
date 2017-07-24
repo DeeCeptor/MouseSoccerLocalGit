@@ -33,69 +33,97 @@ public class PongBall : MonoBehaviour
     }
     public void HitPlayer(Collider2D collision)
     {
-        if (TimeSinceLastCollision() < bounce_score_cooldown)
+        if (TimeSinceLastCollision() < bounce_score_cooldown || !Trial.trial.trial_running)
             return;
 
         collision.gameObject.GetComponent<AudioSource>().Play();
+        RecordBounce("Hit something.");
+        float contact_x = this.transform.position.x;
+        Vector2 new_dir = Vector2.zero;
 
-        if (Trial.trial.trial_running)
+        // Add a score
+        if (Trial.trial is SoloPong)
         {
-            // Add a score
-            if (Trial.trial.trial_running && Trial.trial is SoloPong)
+            SoloPong pong = (SoloPong)Trial.trial;
+            pong.current_round_record.total_bounces += 1;
+            ScoreManager.score_manager.blue_score += 1;
+
+            new_dir = new_dir = HitPlayerPaddle(contact_x, collision);
+        }
+        else if (Trial.trial is TeamPong)
+        {
+            TeamPong pong = (TeamPong)Trial.trial;
+            pong.current_round_record.total_bounces += 1;
+            ScoreManager.score_manager.blue_score += 1;
+
+            if (collision.gameObject.GetComponent<Player>().player_id == ScoreManager.score_manager.players[0].player_id)
+                pong.current_round_record.player_1_bounces++;
+            else
+                pong.current_round_record.player_2_bounces++;
+
+            new_dir = HitPlayerPaddle(contact_x, collision);
+            Debug.Log("TeamPong");
+
+            if (WillHitOtherWall(new_dir))
+                new_dir.x = -new_dir.x;
+        }
+        else if (Trial.trial is SoloPongLikeTeamPong)
+        {
+            SoloPongLikeTeamPong pong = (SoloPongLikeTeamPong)Trial.trial;
+            pong.current_round_record.total_bounces += 1;
+
+            // Check if hit player, or hit wall
+            Player p = collision.gameObject.GetComponent<Player>();
+            if (p != null && p.player_id == ScoreManager.score_manager.players[0].player_id)
             {
-                SoloPong pong = (SoloPong)Trial.trial;
-                pong.current_round_record.total_bounces += 1;
-
+                // Hit player
+                pong.current_round_record.player_bounces++;
                 ScoreManager.score_manager.blue_score += 1;
+                new_dir = HitPlayerPaddle(contact_x, collision);
+                //Debug.Log("SoloPongLikeTeamPong hit player " + collision.gameObject.name);
             }
-            else if (Trial.trial.trial_running && Trial.trial is TeamPong)
+            else
             {
-                TeamPong pong = (TeamPong)Trial.trial;
-                pong.current_round_record.total_bounces += 1;
+                // Hit wall
+                pong.current_round_record.wall_bounces++;
 
-                ScoreManager.score_manager.blue_score += 1;
-
-                if (collision.gameObject.GetComponent<Player>().player_id == ScoreManager.score_manager.players[0].player_id)
-                {
-                    pong.current_round_record.player_1_bounces++;
-                }
-                else
-                    pong.current_round_record.player_2_bounces++;
+                // Get a random new direction
+                float signed_normalized_difference = Random.Range(-1.0f, 1.0f);
+                new_dir = new Vector2(signed_normalized_difference * max_x_angle, -Mathf.Sign(physics.velocity.y) * 0.5f).normalized;
+                //Debug.Log("SoloPongLikeTeamPong hit wall " + collision.gameObject.name);
             }
 
-            RecordBounce("Hit player.");
+            if (WillHitOtherWall(new_dir))
+                new_dir.x = -new_dir.x;
         }
 
-
-        float contact_x = this.transform.position.x;
-
-        // Figure out where we contacted the paddle
+        physics.velocity = new_dir * Ball.ball.max_speed;
+    }
+    public Vector2 HitPlayerPaddle(float contact_x, Collider2D collision)
+    {
+        // Hit the player paddle, figure out where we contacted the paddle
         float difference = Mathf.Abs(Mathf.Abs(collision.gameObject.transform.position.x) - Mathf.Abs(contact_x));
         float sign = collision.gameObject.transform.position.x > contact_x ? -1.0f : 1.0f;
         float signed_difference = sign * difference;
         float signed_normalized_difference = Mathf.Clamp(signed_difference / (collision.gameObject.transform.localScale.x / 2), -1.0f, 1.0f);
-        
+
         // https://gamedev.stackexchange.com/questions/4253/in-pong-how-do-you-calculate-the-balls-direction-when-it-bounces-off-the-paddl
         // Add slight angle to ball based on where we collided with paddle
-        Vector2 new_dir = new Vector2(signed_normalized_difference * max_x_angle, -Mathf.Sign(physics.velocity.y) * 0.5f).normalized;
+        return new Vector2(signed_normalized_difference * max_x_angle, -Mathf.Sign(physics.velocity.y) * 0.5f).normalized;
+    }
+    public bool WillHitOtherWall(Vector2 new_direction)
+    {
+        // Do a raycast see if this intersects left or right wall
+        RaycastHit2D r = Physics2D.Raycast(this.transform.position, new_direction, 30, LayerMask.GetMask(new string[] { "Walls" }));
 
-        if (Trial.trial is TeamPong)
+        // If it does, simply inverse X direction
+        if (r.transform != null && (r.transform.name.Contains("Left") || r.transform.name.Contains("Right")))
         {
-            // Do a raycast see if this intersects left or right wall
-            RaycastHit2D r = Physics2D.Raycast(this.transform.position, new_dir, 30, LayerMask.GetMask(new string[] { "Walls" }));
-
-            if (r.transform != null)
-                Debug.LogWarning(r.transform.name);
-
-            // If it does, simply inverse X direction
-            if (r.transform != null && (r.transform.name.Contains("Left") || r.transform.name.Contains("Right")))
-            {
-                //Debug.LogWarning("Changing dir, hit " + r.transform.name, this.gameObject);
-                new_dir.x = -new_dir.x;
-            }
+            Debug.LogWarning("Changing dir, hit " + r.transform.name, this.gameObject);
+            return true;
         }
-
-        physics.velocity = new_dir * Ball.ball.max_speed;
+        else
+            return false;
     }
 
 
