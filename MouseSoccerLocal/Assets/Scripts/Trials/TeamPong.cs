@@ -11,6 +11,7 @@ public class TeamPongRecord : Round_Record
     public int player_1_bounces, player_2_bounces;  // Times  bounces off the paddle of each player. 1 = Top of screen, 0 = Bottom of screen
     public int total_misses;          // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
     public int player_1_misses, player_2_misses;  // Which player missed the ball? 1 = Top of screen, 0 = Bottom of screen
+    public float percent_bounces_missed;        // Having a high percentage is bad. 100% means all were missed. 50% means half were missed
     public float avg_dist_missed_by;     // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
     public float bounces_per_miss;      // total_bounces / total_misses
     public float paddle_width, ball_radius, ball_speed, distance_between_players;
@@ -25,7 +26,7 @@ public class TeamPongRecord : Round_Record
     public override string ToString()
     {
         return base.ToString() + "," + total_bounces + "," + player_1_bounces + "," + player_2_bounces
-            + "," + total_misses + "," + player_1_misses + "," + player_2_misses + "," + avg_dist_missed_by + "," + bounces_per_miss
+            + "," + total_misses + "," + player_1_misses + "," + player_2_misses + "," + avg_dist_missed_by + "," + bounces_per_miss + "," + percent_bounces_missed
             + "," + Round_Record.ListToString<float>(time_needed_on_misses) + "," + avg_time_needed_on_miss + "," + min_ball_tat
             + "," + paddle_width + "," + ball_radius + "," + ball_speed + "," + distance_between_players
             + "," + total_screen_width + "," + paddle_takes_percent_of_screen;
@@ -33,7 +34,7 @@ public class TeamPongRecord : Round_Record
     public override string FieldNames()
     {
         return base.FieldNames() + ",total_bounces,player_1_bounces,player_2_bounces"
-            + ",total_misses,player_1_misses,player_2_misses,avg_dist_missed_by,bounces_per_miss"
+            + ",total_misses,player_1_misses,player_2_misses,avg_dist_missed_by,bounces_per_miss,percent_bounces_missed"
             + ",time_needed_on_misses,avg_time_needed_on_miss,min_ball_tat"
             + ",paddle_width,ball_radius,ball_speed,distance_between_players"
             + ",total_screen_width, paddle_takes_percent_of_screen";
@@ -54,6 +55,8 @@ public class TeamPong : Trial
     public List<float> ball_speeds = new List<float>();
     float current_ball_speed_of_round;  // Gotten from text file
     public List<float> distances_between_players = new List<float>();
+
+    int shot_counter = 0;   // Used to alternate which direction the ball is being launched each time
 
 
     public override void StartTrial()
@@ -124,7 +127,8 @@ public class TeamPong : Trial
         current_round_record.ball_speed = current_ball_speed_of_round;
 
         // Distance between players - (radius of ball * 2, because radius is half with the diameter, so 2 radii gives a full length of ball)
-        float total_distance_needed = current_round_record.distance_between_players - (current_round_record.ball_radius * 2);
+        // Maybe don't need radius * 2 if we only care when the ball's center position passes the paddle
+        float total_distance_needed = current_round_record.distance_between_players;// - (current_round_record.ball_radius * 2);
         current_round_record.min_ball_tat = total_distance_needed / current_ball_speed_of_round;
         current_round_record.total_screen_width = CameraRect.camWidth;
         current_round_record.paddle_takes_percent_of_screen = current_round_record.paddle_width / current_round_record.total_screen_width;
@@ -180,13 +184,18 @@ public class TeamPong : Trial
 
     public override void FinishRound()
     {
-        current_round_record.bounces_per_miss = (float) current_round_record.total_bounces / (float) current_round_record.total_misses;
+        current_round_record.bounces_per_miss = (float) current_round_record.total_bounces / (float) (current_round_record.total_misses == 0 ? 1 : current_round_record.total_misses);
 
+        if (current_round_record.total_misses != 0)
+        {
+            current_round_record.percent_bounces_missed = (float) current_round_record.total_misses / (float) (current_round_record.total_misses + current_round_record.total_bounces);
+        }
         base.FinishRound();
     }
     public Vector2 GetNewRandomBallVelocity()
     {
-        return new Vector2(UnityEngine.Random.Range(-0.3f, 0.3f), UnityEngine.Random.Range(0, 2) == 1 ? 0.5f : -0.5f);
+        shot_counter++;
+        return new Vector2(UnityEngine.Random.Range(-0.3f, 0.3f), shot_counter % 2 == 0 ? 0.5f : -0.5f);
     }
 
     public override void ResetBetweenRounds()
@@ -205,13 +214,14 @@ public class TeamPong : Trial
         foreach (TeamPongRecord r in round_results)
         {
             if (r.avg_dist_missed_by != 0)
-                r.avg_dist_missed_by = r.avg_dist_missed_by / r.total_misses;
-            
+                r.avg_dist_missed_by = r.avg_dist_missed_by / r.total_misses == 0 ? 1 : r.total_misses;
+
             foreach (float time_needed in r.time_needed_on_misses)
             {
                 r.avg_time_needed_on_miss += time_needed;
             }
-            r.avg_time_needed_on_miss = r.avg_time_needed_on_miss / r.time_needed_on_misses.Count;
+            if (r.avg_time_needed_on_miss != 0)
+                r.avg_time_needed_on_miss = r.avg_time_needed_on_miss / r.time_needed_on_misses.Count;
         }
 
         // Record our findings in a text file
@@ -254,7 +264,13 @@ public class TeamPong : Trial
         // Calculate how much the ball missed by
         current_round_record.avg_dist_missed_by += missed_by;
         current_round_record.total_misses += 1;
+
+        // How much time did they have to react from when ball the other paddle (or from starting position in middle, from which there is a line showing the trajectory)
+        float time_they_to_had_react = Ball.ball.GetComponent<PongBall>().TimeSinceLastCollision();
+        current_round_record.time_needed_on_misses.Add(time_they_to_had_react);
+
         Debug.Log(goal_name + "Ball missed by " + missed_by + ", total misses: " + current_round_record.total_misses);
+        Debug.Log("They had " + time_they_to_had_react + " seconds to react to that shot. TaT: " + current_round_record.min_ball_tat + " Cur time: " + Time.time + " Last collision time: " + Ball.ball.GetComponent<PongBall>().time_of_last_collision);
 
         start_beep.Play();
         StopShootAfterGoal();
@@ -302,13 +318,11 @@ public class TeamPong : Trial
             (Ball.ball.transform.position.y <= ScoreManager.score_manager.players[0].transform.position.y
             || Ball.ball.transform.position.y >= ScoreManager.score_manager.players[1].transform.position.y))
         {
+            /*
             if (!ball_was_below_before)
             {
-                // How much time did they have to react from when ball the other paddle (or from starting position in middle, from which there is a line showing the trajectory)
-                float time_they_to_had_react = Ball.ball.GetComponent<PongBall>().TimeSinceLastCollision();
-                Debug.Log("They had " + time_they_to_had_react + " seconds to react to that shot. TaT: " + current_round_record.min_ball_tat + " Cur time: " + Time.time + " Last collision time: " + Ball.ball.GetComponent<PongBall>().time_of_last_collision);
-                current_round_record.time_needed_on_misses.Add(time_they_to_had_react);
-            }
+
+            }*/
             ball_was_below_before = true;
             SetPlayerColliders(false);
         }

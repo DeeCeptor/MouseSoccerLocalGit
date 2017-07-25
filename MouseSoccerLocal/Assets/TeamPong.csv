@@ -1,6 +1,0 @@
-trial_id,participant_id,round_number,practice_round,num_rounds_since_survey,input_lag,time_for_round,total_bounces,player_1_bounces,player_2_bounces,total_misses,player_1_misses,player_2_misses,avg_dist_missed_by,bounces_per_miss,time_needed_on_misses,avg_time_needed_on_miss,min_ball_tat,paddle_width,ball_radius,ball_speed,distance_between_players,total_screen_width, paddle_takes_percent_of_screen
-4,0,1,1,0,0,6.010049,4,2,2,2,1,1,4.875418,2,0.4001335:0.6870236:0.3944712:0.3864794,0.4670269,0.65,1,0.25,10,7,16.01563,0.06243902
-4,0,2,0,1,50,6.001911,6,3,3,4,3,1,2.848464,1,0.4729033:0.4200954:0.3963318,0.4297768,0.3666667,1,0.25,15,6,16.01563,0.06243902
-4,0,3,0,2,200,6.0009,3,2,1,2,0,2,1.853226,1,1.122431:1.003727,1.063079,0.9,1,0.25,5,5,16.01563,0.06243902
-4,0,4,0,3,50,6.014118,3,1,2,3,1,2,1.72789,1,0.6762276:0.3211708:0.6430283,0.5468089,0.55,1,0.25,10,6,16.01563,0.06243902
-4,0,5,0,4,50,6.010909,1,1,0,4,0,4,0.8153603,0,0.2716255:0.2566528:0.2782593:0.4973831,0.3259802,0.45,1,0.25,10,5,16.01563,0.06243902

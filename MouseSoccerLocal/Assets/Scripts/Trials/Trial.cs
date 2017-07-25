@@ -19,16 +19,26 @@ public class Round_Record
 
     public virtual new string ToString()
     {
-        string return_val = trial_id + "," + participant_id + "," + round_number + "," + practice_round + "," + num_rounds_since_survey + "," + ms_input_lag_of_round + "," + round_time_taken;
+        return trial_id + "," + participant_id + "," + round_number + "," + practice_round + "," + num_rounds_since_survey + "," + ms_input_lag_of_round + "," + round_time_taken;
+    }
+    public virtual string ExtrasToString()
+    {
+        string return_val = "";
         foreach (ExtraRecordItem r in survey_questions)
         {
             return_val += "," + r.value;
         }
         return return_val;
     }
+
+
     public virtual string FieldNames()
     {
-        string return_val = "trial_id,participant_id,round_number,practice_round,num_rounds_since_survey,input_lag,time_for_round";
+        return "trial_id,participant_id,round_number,practice_round,num_rounds_since_survey,input_lag,time_for_round";
+    }
+    public virtual string ExtrasFieldNames()
+    {
+        string return_val = "";
         foreach (ExtraRecordItem r in survey_questions)
         {
             return_val += "," + r.name;
@@ -265,7 +275,7 @@ public class Trial : MonoBehaviour
         string[] results = new string[round_results.Count];
         for (int x = 0; x < round_results.Count; x++)
         {
-            results[x] = round_results[x].ToString();
+            results[x] = round_results[x].ToString() + round_results[x].ExtrasToString();
         }
         string path = Application.dataPath + "/" + text_file_name;    // Application.persistentDataPath
 
@@ -273,7 +283,7 @@ public class Trial : MonoBehaviour
 
         // If file doesn't exist, add the header line
         if (!System.IO.File.Exists(path))
-            text = round_results[0].FieldNames() + "\n" + text;  // Top line contains column names
+            text = round_results[round_results.Count - 1].FieldNames() + round_results[round_results.Count - 1].ExtrasFieldNames() + "\n" + text;  // Top line contains column names
         else
             text += "\n";
 
@@ -315,15 +325,18 @@ public class Trial : MonoBehaviour
         if (round_timer != null)
             round_timer.text = "" + (int)(time_limit - time_for_current_round);
 
-        if (Time.timeScale <= 0 && !trial_running)
-            return;
+        if (ScoreManager.debug_view || (Application.isEditor))
+        {
+            if (Time.timeScale <= 0 && !trial_running)
+                return;
 
-        string display_string = "";
-        display_string += "Round: " + current_round;
+            string display_string = "";
+            display_string += "Round: " + (current_round + 1);
 
-        if (enforce_time_limit)
-            display_string += "\nTime remaining: " + (int) (time_limit - time_for_current_round);
+            if (enforce_time_limit)
+                display_string += "\nTime remaining: " + (int)(time_limit - time_for_current_round);
 
-        GUI.Label(gui_rect, display_string);
+            GUI.Label(gui_rect, display_string);
+        }
     }
 }

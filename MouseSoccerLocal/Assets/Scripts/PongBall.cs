@@ -135,7 +135,8 @@ public class PongBall : MonoBehaviour
 
     public void RecordBounce(string prepend_msg)
     {
-        Debug.Log(prepend_msg + " Time since last collision " + (Time.time - time_of_last_collision), this.gameObject);
+        if (!prepend_msg.Contains("Wall"))
+            Debug.Log(prepend_msg + " Time since last collision " + (Time.time - time_of_last_collision), this.gameObject);
         time_of_last_collision = Time.time;
     }
 

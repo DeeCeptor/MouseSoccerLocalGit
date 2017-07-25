@@ -108,6 +108,11 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &91361631 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1699268084369264, guid: 8062dde58ff6bf541a76529601be3903,
+    type: 2}
+  m_PrefabInternal: {fileID: 1163522825}
 --- !u!1 &212299449
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +336,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 245, y: 0}
+  m_AnchoredPosition: {x: 245, y: 63}
   m_SizeDelta: {x: 210, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &364885077
@@ -458,17 +463,19 @@ MonoBehaviour:
   trial_id: 3
   number_players_required: 1
   current_round: -1
-  total_rounds: 4
+  total_rounds: 12
   time_for_current_round: 0
   total_time_for_trial: 0
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
-  time_limit: 30
-  survey_every_x_rounds: 99
-  survey_objects_to_activate: []
-  practice_rounds_at_start: 0
-  practice_rounds_per_survey: 3
+  time_limit: 60
+  survey_every_x_rounds: 1
+  survey_objects_to_activate:
+  - {fileID: 91361631}
+  - {fileID: 1114002687}
+  practice_rounds_at_start: 1
+  practice_rounds_per_survey: 0
   input_delay_values: {fileID: 4900000, guid: dc52282963a4e5844acc35bb44f60925, type: 3}
   input_delay_per_round: 
   text_file_name: SoloPong.csv
@@ -1582,7 +1589,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 152.99986, y: -52.00004}
+  m_AnchoredPosition: {x: 645, y: -299.31}
   m_SizeDelta: {x: 160, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092053277
@@ -1638,6 +1645,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1092053275}
+--- !u!1 &1114002687 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1987223942063482, guid: 8062dde58ff6bf541a76529601be3903,
+    type: 2}
+  m_PrefabInternal: {fileID: 1163522825}
 --- !u!1 &1131568878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1763,7 +1775,7 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1699268084369264, guid: 8062dde58ff6bf541a76529601be3903, type: 2}
+    - target: {fileID: 1987223942063482, guid: 8062dde58ff6bf541a76529601be3903, type: 2}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -5060,6 +5072,21 @@ Prefab:
         type: 2}
       propertyPath: max_x_angle
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 50151349291439732, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 50151349291439732, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: m_Constraints
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114624286542563778, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: reset_trail_colour_on_reset
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd, type: 2}
@@ -9077,7 +9104,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6937e3fb4fa6dfa4d99fb840d7a20695, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0

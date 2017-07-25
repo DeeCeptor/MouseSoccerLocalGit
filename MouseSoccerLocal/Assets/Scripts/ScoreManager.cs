@@ -30,7 +30,7 @@ public class ScoreManager : MonoBehaviour
 
     public GameObject ball_prefab;
 
-    bool debug_view = true;
+    public static bool debug_view = false;
 
 
     void Awake () 
@@ -138,9 +138,14 @@ public class ScoreManager : MonoBehaviour
         {
             Cursor.visible = !Cursor.visible;
         }
+        if (Input.GetKeyDown(KeyCode.BackQuote))
+            debug_view = !debug_view;
 
-        // Poll the multimouseinputmanager for time between fixed update frames
-
+        // Fast forward
+        if (debug_view && Input.GetKeyDown(KeyCode.Tab))
+            Time.timeScale = 4.0f;
+        if (debug_view && Input.GetKeyUp(KeyCode.Tab))
+            Time.timeScale = 1.0f;
 
         blue_score_text.text = "" + blue_score;
         red_score_text.text = "" + red_score;
@@ -190,7 +195,10 @@ public class ScoreManager : MonoBehaviour
 
     void OnGUI()
     {
-        if (true || Application.isEditor && debug_view)
+        // *&* Remove for test participants
+        if (
+             debug_view ||
+            (Application.isEditor && debug_view))
         {
             float ms_per_frame = deltaTime * 1000.0f;
             float fps = 1.0f / deltaTime;

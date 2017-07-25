@@ -18,8 +18,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Pong.unity
     guid: dea95a63a45f175428dd982891fdccb1
   - enabled: 1
-    path: Assets/Scenes/TeamPong.unity
+    path: Assets/Scenes/SoloPong - like TeamPong.unity
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/TeamPong.unity
+    guid: c09c23ef0c77be644aa2fe02636efb94
   - enabled: 1
     path: Assets/Scenes/Long-MovingBall.unity
     guid: 29adc6fc25cc4a740a51e434b7b28af1

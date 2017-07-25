@@ -584,18 +584,18 @@ MonoBehaviour:
   trial_id: 4
   number_players_required: 2
   current_round: -1
-  total_rounds: 5
+  total_rounds: 12
   time_for_current_round: 0
   total_time_for_trial: 9999
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
-  time_limit: 6
-  survey_every_x_rounds: 99
+  time_limit: 60
+  survey_every_x_rounds: 999
   survey_objects_to_activate: []
-  practice_rounds_at_start: 0
-  practice_rounds_per_survey: 1
-  input_delay_values: {fileID: 4900000, guid: 02101b14d45bb62489fff2217855fd01, type: 3}
+  practice_rounds_at_start: 1
+  practice_rounds_per_survey: 0
+  input_delay_values: {fileID: 4900000, guid: dc52282963a4e5844acc35bb44f60925, type: 3}
   input_delay_per_round: 
   text_file_name: TeamPong.csv
   timer_beeps: {fileID: 1695031112}

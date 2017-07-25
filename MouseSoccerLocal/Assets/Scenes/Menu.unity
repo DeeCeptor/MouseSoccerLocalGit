@@ -407,7 +407,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Pong
+  m_Text: Solo Pong
 --- !u!222 &247010016
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -568,7 +568,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &324453747
 RectTransform:
   m_ObjectHideFlags: 0
@@ -583,10 +583,10 @@ RectTransform:
   m_Father: {fileID: 1940281989}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 108, y: -337.87064}
+  m_SizeDelta: {x: 216, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &324453748
 MonoBehaviour:
@@ -1422,7 +1422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &638988256
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1435,12 +1435,12 @@ RectTransform:
   m_Children:
   - {fileID: 1634858292}
   m_Father: {fileID: 1940281989}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 108, y: -247.87064}
+  m_SizeDelta: {x: 216, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &638988257
 MonoBehaviour:
@@ -1856,9 +1856,9 @@ MonoBehaviour:
 
     After Joining:
 
-    MOVE the mouse to control your character
+    MOVE the mouse to move your paddle
 
-    MOVE your character into the ball to kick it
+    Prevent the ball from entering the red zone
 
 
 
@@ -1868,7 +1868,9 @@ MonoBehaviour:
 
     ESCAPE to go back to this menu
 
-    M to toggle mouse visibility'
+    M to toggle mouse visibility
+
+    ~ to turn on debug info'
 --- !u!222 &705703522
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1907,7 +1909,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &772769651
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1920,12 +1922,12 @@ RectTransform:
   m_Children:
   - {fileID: 879719161}
   m_Father: {fileID: 1940281989}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 108, y: -202.87064}
+  m_SizeDelta: {x: 216, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &772769652
 MonoBehaviour:
@@ -2508,7 +2510,7 @@ RectTransform:
   m_Children:
   - {fileID: 1616986755}
   m_Father: {fileID: 1940281989}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3396,7 +3398,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1437209908
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3411,10 +3413,10 @@ RectTransform:
   m_Father: {fileID: 1940281989}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 108, y: -292.87064}
+  m_SizeDelta: {x: 216, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1437209909
 MonoBehaviour:
@@ -4223,7 +4225,7 @@ GameObject:
   - component: {fileID: 1751464111}
   - component: {fileID: 1751464110}
   m_Layer: 5
-  m_Name: Pong
+  m_Name: SoloPong
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4241,7 +4243,7 @@ RectTransform:
   m_Children:
   - {fileID: 247010014}
   m_Father: {fileID: 1940281989}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4313,7 +4315,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Pong
+          m_StringArgument: SoloPong - like TeamPong
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -4674,10 +4676,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 772769651}
-  - {fileID: 638988256}
   - {fileID: 1751464109}
   - {fileID: 1040504227}
+  - {fileID: 772769651}
+  - {fileID: 638988256}
   - {fileID: 1437209908}
   - {fileID: 324453747}
   - {fileID: 937767098}
