@@ -73,7 +73,7 @@ public class TeamSoccer : Trial
 
         // Get input lag for current round
         // Will need a bunch of participant ID's for this one
-        current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
+        current_round_record.participant_id = "" + GlobalSettings.GetParticipantId(0);
         current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
 
         // Put player in correct spot

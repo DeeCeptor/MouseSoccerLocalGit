@@ -65,7 +65,7 @@ public class SoloPong : Trial
 
         // Add entry to list for whether we were successful or not
         round_results.Add(current_round_record);
-        current_round_record.participant_id = GlobalSettings.GetParticipantId(0);
+        current_round_record.participant_id = "" + GlobalSettings.GetParticipantId(0);
         current_round_record.ms_input_lag_of_round = input_delay_per_round[current_round];
 
         // Put player in correct spot

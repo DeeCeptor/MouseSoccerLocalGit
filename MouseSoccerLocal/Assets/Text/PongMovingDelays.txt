@@ -1,12 +1,12 @@
-0
-100
-150
+0,Practice
+100,Practice
+150,Practice
 200
-250
+250,Survey
 300
 0
 100
 150
 200
 250
-300
+300,Survey

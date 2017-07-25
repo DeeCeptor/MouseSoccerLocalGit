@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Round_Record
 {
     public int trial_id;     // What task are we doing?
-    public int participant_id;
+    public string participant_id;   // . separated list of participants being used
     public int round_number;
     public int ms_input_lag_of_round;
     public float round_time_taken = 0;
@@ -85,13 +85,12 @@ public class Trial : MonoBehaviour
     public bool enforce_time_limit = false;     // Does this trial have a time limit for each round? Ex: each round is 3 seconds
     public float time_limit = 3.0f;     // Time limit for the current round
 
-    public int survey_every_x_rounds = 15;      // When should we bring up the survey menu?
     public List<GameObject> survey_objects_to_activate = new List<GameObject>();
-    public int practice_rounds_at_start = 0;
-    public int practice_rounds_per_survey = 3;
 
     public TextAsset input_delay_values;        // One value per line
     public List<int> input_delay_per_round = new List<int>();   // Read from a text file (input_delay_values)
+    public bool[] practice_rounds;      // Read from a text file, which rounds are practice (don't count for data)
+    public bool[] survey_rounds;        // Read from a text file, which rounds should launch a survey after they're done?
 
     public string text_file_name = "Results.txt";
 
@@ -104,6 +103,8 @@ public class Trial : MonoBehaviour
     public virtual void Awake()
     {
         trial = this;
+        practice_rounds = new bool[total_rounds];
+        survey_rounds = new bool[total_rounds];
         PopulateInputDelays();
     }
     public virtual void Start()
@@ -122,10 +123,28 @@ public class Trial : MonoBehaviour
         string[] splits = { "\n" };
         string[] str_vals = input_delay_values.text.Split(splits, StringSplitOptions.RemoveEmptyEntries);
 
+        // Go through each line
+        int round_number = 0;
         foreach (string s in str_vals)
         {
-            input_delay_per_round.Add(int.Parse(s));
+            string[] items = s.Split(',');
+
+            // Get the input delay
+            input_delay_per_round.Add(int.Parse(items[0]));
+
+            if (items.Length > 1)
+            {
+                // Get the practice round
+                if (items[1].Contains("Practice"))
+                    practice_rounds[round_number] = true;
+                // Get the survey
+                if (items[1].Contains("Survey"))
+                    survey_rounds[round_number] = true;
+            }
+
+            round_number++;
         }
+
         Debug.Log("Done loading input delay values", this.gameObject);
     }
 
@@ -198,19 +217,11 @@ public class Trial : MonoBehaviour
         round_results[current_round].round_time_taken = time_for_current_round;
         round_results[current_round].round_number = current_round + 1;
         round_results[current_round].trial_id = trial_id;
-        round_results[current_round].num_rounds_since_survey = practice_rounds_per_survey > 0 ? current_round % survey_every_x_rounds : 0;
-
-        // Was this a practice round?
-        if ( (practice_rounds_at_start != 0 && practice_rounds_at_start < current_round)
-                ||
-             (practice_rounds_per_survey > 0 && current_round % survey_every_x_rounds < practice_rounds_per_survey) )
-            round_results[current_round].practice_round = 1;
-
+        //round_results[current_round].num_rounds_since_survey = practice_rounds_per_survey > 0 ? current_round % survey_every_x_rounds : 0;
+        round_results[current_round].practice_round = practice_rounds[current_round] ? 1 : 0;
 
         // Should we bring up the survey window?
-        if (current_round > 0 
-            && survey_every_x_rounds > 0
-            && (current_round + 1) % survey_every_x_rounds == 0)
+        if (survey_rounds[current_round])
         {
             ActivateSurvey();
             ScoreManager.score_manager.ResetScore();
@@ -230,11 +241,15 @@ public class Trial : MonoBehaviour
     public virtual void AddSurveyResultsToRecords(ExtraRecordItem r)
     {
         // Add to the last X trial records that this survey applied to
-        for (int x = round_results.Count - survey_every_x_rounds; x < round_results.Count; x++)
+        for (int x = current_round; x > 0; x--)
         {
-            round_results[x].survey_questions.Add(r);
+            if (x != current_round && survey_rounds[x - 1])
+                break;
+
+            round_results[x - 1].survey_questions.Add(r);
         }
     }
+
 
     public virtual void ResetBetweenRounds()
     {

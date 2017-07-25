@@ -469,15 +469,14 @@ MonoBehaviour:
   trial_running: 0
   round_running: 0
   enforce_time_limit: 1
-  time_limit: 60
-  survey_every_x_rounds: 1
+  time_limit: 2
   survey_objects_to_activate:
   - {fileID: 91361631}
   - {fileID: 1114002687}
-  practice_rounds_at_start: 1
-  practice_rounds_per_survey: 0
   input_delay_values: {fileID: 4900000, guid: dc52282963a4e5844acc35bb44f60925, type: 3}
   input_delay_per_round: 
+  practice_rounds: 
+  survey_rounds: 
   text_file_name: SoloPong.csv
   timer_beeps: {fileID: 1695031112}
   start_beep: {fileID: 1864387132}
