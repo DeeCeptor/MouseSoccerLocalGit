@@ -37,7 +37,6 @@ public class PongBall : MonoBehaviour
             return;
 
         collision.gameObject.GetComponent<AudioSource>().Play();
-        RecordBounce("Hit something.");
         float contact_x = this.transform.position.x;
         Vector2 new_dir = Vector2.zero;
 
@@ -77,7 +76,8 @@ public class PongBall : MonoBehaviour
             if (p != null && p.player_id == ScoreManager.score_manager.players[0].player_id)
             {
                 // Hit player
-                pong.current_round_record.player_bounces++;
+                pong.RecordPlayerBounce();
+
                 ScoreManager.score_manager.blue_score += 1;
                 new_dir = HitPlayerPaddle(contact_x, collision);
                 //Debug.Log("SoloPongLikeTeamPong hit player " + collision.gameObject.name);
@@ -97,6 +97,7 @@ public class PongBall : MonoBehaviour
                 new_dir.x = -new_dir.x;
         }
 
+        RecordBounce("Hit something.");
         physics.velocity = new_dir * Ball.ball.max_speed;
     }
     public Vector2 HitPlayerPaddle(float contact_x, Collider2D collision)

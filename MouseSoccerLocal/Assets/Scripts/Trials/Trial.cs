@@ -54,7 +54,11 @@ public class Round_Record
         {
             strings.Add(a_list[x].ToString());
         }
-        return String.Join(":", strings.ToArray());
+
+        if (a_list.Count > 0)
+            return String.Join(":", strings.ToArray());
+        else
+            return "";
     }
 }
 
@@ -132,7 +136,7 @@ public class Trial : MonoBehaviour
             // Get the input delay
             input_delay_per_round.Add(int.Parse(items[0]));
 
-            if (items.Length > 1)
+            if (items.Length > 1 && total_rounds > round_number)
             {
                 // Get the practice round
                 if (items[1].Contains("Practice"))
