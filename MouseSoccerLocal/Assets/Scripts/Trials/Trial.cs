@@ -58,7 +58,7 @@ public class Round_Record
         if (a_list.Count > 0)
             return String.Join(":", strings.ToArray());
         else
-            return "";
+            return "0";
     }
 }
 

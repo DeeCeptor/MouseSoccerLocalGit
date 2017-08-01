@@ -9,18 +9,20 @@ public class SoloPongLikeTeamRecord : Round_Record
 {
     public int total_bounces, player_bounces, wall_bounces;      // How many times did the ball bounce off the paddle? The top wall? The higher score, the better
     public int unskilled_bounces, skilled_bounces;      // How many total times after the initial trajectory shot has it bounced off the paddle?
+    public int skilled_bounces_minus_misses;            // Best way to measure actual performance. Must take into account later rounds are faster, which could result in more bounces!
+    public int highest_skilled_bounce_streak;    // The best run of how many total times after the initial trajectory shot has it bounced off the paddle?
     public List<float> time_needed_on_skilled_bounces = new List<float>();
     public float avg_time_needed_on_skilled_bounces;
     public List<float> time_needed_on_unskilled_bounces = new List<float>();
     public float avg_time_needed_on_unskilled_bounces;
     public List<float> time_needed_on_all_bounces = new List<float>();
     public float avg_time_needed_on_all_bounces;
-    public int highest_skilled_bounce_streak;    // The best run of how many total times after the initial trajectory shot has it bounced off the paddle?
     public int total_misses;          // Each time the ball slips past is a miss. Want a low score (0 is the best possible score)
     public int unskilled_misses, skilled_misses;        // How many times the players missed the ball when the trajectory was shown. Trajectory is shown during the first shot of the round, and after every miss
     public float avg_dist_missed_by;    // Distance from the ball to the paddle when the ball entered 'end zone' (player screwed up)
     public float total_bounces_per_miss, unskilled_bounces_per_miss, skilled_bounces_per_miss;      // bounces / misses
     public float percent_bounces_missed;        // Having a high percentage is bad. 100% means all were missed. 50% means half were missed
+    public float percent_skilled_bounces_missed;    // total_misses / skiled_bounces + total_misses. Having a high percentage is bad. 100% means were missed. 60% means 3/5ths were missed
     public float paddle_width, ball_radius, ball_speed, distance_between_players;
     public float min_ball_tat;  // Ball turn around time; how much time the player has to move before the ball reaches one end. distance (-radius/2) / ball_speed
                                 // SHORTEST POSSIBLE TIME IS A STRAIGHT LINE. Most shots won't be a straight line, so they will have ever so slightly longer to react (+0.01/0.02ms)
@@ -36,12 +38,12 @@ public class SoloPongLikeTeamRecord : Round_Record
 
     public override string ToString()
     {
-        return base.ToString() + "," + total_bounces + "," + player_bounces + "," + wall_bounces + "," + unskilled_bounces + "," + skilled_bounces + "," + highest_skilled_bounce_streak
+        return base.ToString() + "," + total_bounces + "," + player_bounces + "," + wall_bounces + "," + unskilled_bounces + "," + skilled_bounces + "," + skilled_bounces_minus_misses + "," + highest_skilled_bounce_streak
             + "," + Round_Record.ListToString<float>(time_needed_on_skilled_bounces) + "," + avg_time_needed_on_skilled_bounces
             + "," + Round_Record.ListToString<float>(time_needed_on_unskilled_bounces) + "," + avg_time_needed_on_unskilled_bounces
             + "," + Round_Record.ListToString<float>(time_needed_on_all_bounces) + "," + avg_time_needed_on_all_bounces 
             + "," + total_misses + "," + unskilled_misses + "," + skilled_misses
-            + "," + avg_dist_missed_by + "," + total_bounces_per_miss + "," + unskilled_bounces_per_miss + "," + skilled_bounces_per_miss + "," + percent_bounces_missed
+            + "," + avg_dist_missed_by + "," + total_bounces_per_miss + "," + unskilled_bounces_per_miss + "," + skilled_bounces_per_miss + "," + percent_bounces_missed + "," + percent_skilled_bounces_missed
             + "," + Round_Record.ListToString<float>(time_needed_on_skilled_misses) + "," + avg_time_needed_on_skilled_miss
             + "," + Round_Record.ListToString<float>(time_needed_on_unskilled_misses) + "," + avg_time_needed_on_unskilled_miss
             + "," + Round_Record.ListToString<float>(time_needed_on_all_misses) + "," + avg_time_needed_on_all_miss
@@ -50,12 +52,12 @@ public class SoloPongLikeTeamRecord : Round_Record
     }
     public override string FieldNames()
     {
-        return base.FieldNames() + ",total_bounces,player_bounces,wall_bounces,unskilled_bounces,skilled_bounces,highest_skill_streak"
+        return base.FieldNames() + ",total_bounces,player_bounces,wall_bounces,unskilled_bounces,skilled_bounces,skilled_bounces_minus_misses,highest_skill_streak"
             + ",time_needed_on_skilled_bounces,avg_time_needed_on_skilled_bounces"
             + ",time_needed_on_unskilled_bounces,avg_time_needed_on_unskilled_bounces"
             + ",time_needed_on_all_bounces,avg_time_needed_on_all_bounces"
             + ",total_misses,unskilled_misses,skilled_misses"
-            + ",avg_dist_missed_by,total_bounces_per_miss,unskilled_bounces_per_miss,skilled_bounces_per_miss,percent_bounces_missed"
+            + ",avg_dist_missed_by,total_bounces_per_miss,unskilled_bounces_per_miss,skilled_bounces_per_miss,percent_bounces_missed,percent_skilled_bounces_missed"
             + ",time_needed_on_skilled_misses,avg_time_needed_on_skilled_misses"
             + ",time_needed_on_unskilled_misses,avg_time_needed_on_unskilled_misses"
             + ",time_needed_on_all_misses,avg_time_needed_on_all_misses"
@@ -193,10 +195,12 @@ public class SoloPongLikeTeamPong : Trial
     IEnumerator StartRoundIn()
     {
         Ball.ball.Reset(Vector2.zero);
+        Ball.ball.GetComponent<PongBall>().time_of_last_collision = Time.time;
 
         float time_countdown = 3.0f;
         timer_text.gameObject.SetActive(true);
         int prev_time = 0;
+
         while (time_countdown > 0)
         {
             time_countdown -= Time.deltaTime;
@@ -230,25 +234,28 @@ public class SoloPongLikeTeamPong : Trial
         Ball.ball.physics.velocity = initial_ball_velocity;
         starting_ball_path.gameObject.SetActive(false);
         SetPlayerColliders(true);
-        Ball.ball.GetComponent<PongBall>().time_of_last_collision = Time.time;
     }
 
 
     public override void FinishRound()
     {
         current_round_record.total_bounces_per_miss = (float)current_round_record.player_bounces / (float) (current_round_record.total_misses == 0 ? 1 : current_round_record.total_misses);
-        current_round_record.unskilled_bounces_per_miss = (float)current_round_record.unskilled_bounces / (float)(current_round_record.unskilled_misses == 0 ? 1 : current_round_record.unskilled_misses);
-        current_round_record.skilled_bounces_per_miss = (float)current_round_record.skilled_bounces / (float)(current_round_record.skilled_misses == 0 ? 1 : current_round_record.skilled_misses);
+        current_round_record.unskilled_bounces_per_miss = (float)current_round_record.unskilled_bounces / (float)(current_round_record.unskilled_misses == 0 ? 1 : current_round_record.total_misses);
+        current_round_record.skilled_bounces_per_miss = (float)current_round_record.skilled_bounces / (float)(current_round_record.skilled_misses == 0 ? 1 : current_round_record.total_misses);
+        current_round_record.skilled_bounces_minus_misses = current_round_record.skilled_bounces - current_round_record.total_misses;
 
         if (current_round_record.total_misses != 0)
-            current_round_record.percent_bounces_missed = (float) current_round_record.total_misses / (float) (current_round_record.total_misses + current_round_record.player_bounces);
+        {
+            current_round_record.percent_bounces_missed = (float)current_round_record.total_misses / (float)(current_round_record.total_misses + current_round_record.player_bounces);
+            current_round_record.percent_skilled_bounces_missed = (float)current_round_record.total_misses / (float)(current_round_record.total_misses + current_round_record.skilled_bounces);
+        }
 
         base.FinishRound();
     }
     public Vector2 GetNewRandomBallVelocity()
     {
         shot_counter++;
-        return new Vector2(UnityEngine.Random.Range(-0.3f, 0.3f), shot_counter % 2 == 0 ? 0.5f : -0.5f);
+        return new Vector2(UnityEngine.Random.Range(-0.3f, 0.3f), -0.5f);
     }
 
     public override void ResetBetweenRounds()
@@ -369,6 +376,7 @@ public class SoloPongLikeTeamPong : Trial
         starting_ball_path.gameObject.SetActive(true);
         starting_ball_path.SetPosition(1, initial_ball_velocity * 100);
         Ball.ball.Reset(Vector2.zero);
+        Ball.ball.GetComponent<PongBall>().time_of_last_collision = Time.time;
 
         // Wait a second, then shoot the ball
         float time_left = 1.0f;
