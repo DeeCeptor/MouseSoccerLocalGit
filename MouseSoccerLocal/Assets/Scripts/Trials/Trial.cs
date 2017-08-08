@@ -88,6 +88,8 @@ public class Trial : MonoBehaviour
     public bool round_running = false;
     public bool enforce_time_limit = false;     // Does this trial have a time limit for each round? Ex: each round is 3 seconds
     public float time_limit = 3.0f;     // Time limit for the current round
+    public bool half_time_for_practice_rounds = false;
+    float default_time_limit;
 
     public List<GameObject> survey_objects_to_activate = new List<GameObject>();
 
@@ -101,6 +103,7 @@ public class Trial : MonoBehaviour
     public AudioSource timer_beeps;
     public AudioSource start_beep;
     public Text round_timer;
+    public Text practice_round_text;        // Tells the user if this is a practice round
     public bool to_menu_after_trial = false;
 
 
@@ -109,6 +112,7 @@ public class Trial : MonoBehaviour
         trial = this;
         practice_rounds = new bool[total_rounds];
         survey_rounds = new bool[total_rounds];
+        default_time_limit = time_limit;
         PopulateInputDelays();
     }
     public virtual void Start()
@@ -177,6 +181,16 @@ public class Trial : MonoBehaviour
             Debug.Log("Setting input delay to: " + input_delay_per_round[current_round], this.gameObject);
         }
 
+        if (practice_round_text != null)
+            practice_round_text.gameObject.SetActive(IsCurrentRoundRoundPractice());
+
+        if (IsCurrentRoundRoundPractice() && half_time_for_practice_rounds)
+        {
+            time_limit = default_time_limit / 2f;
+        }
+        else
+            time_limit = default_time_limit;
+
         Debug.Log("Starting round " + current_round);
     }
     public virtual void StopRound()
@@ -222,7 +236,7 @@ public class Trial : MonoBehaviour
         round_results[current_round].round_number = current_round + 1;
         round_results[current_round].trial_id = trial_id;
         //round_results[current_round].num_rounds_since_survey = practice_rounds_per_survey > 0 ? current_round % survey_every_x_rounds : 0;
-        round_results[current_round].practice_round = practice_rounds[current_round] ? 1 : 0;
+        round_results[current_round].practice_round = IsCurrentRoundRoundPractice() ? 1 : 0;
 
         // Should we bring up the survey window?
         if (survey_rounds[current_round])
@@ -230,6 +244,12 @@ public class Trial : MonoBehaviour
             ActivateSurvey();
             ScoreManager.score_manager.ResetScore();
         }
+    }
+
+
+    public bool IsCurrentRoundRoundPractice()
+    {
+        return practice_rounds[current_round];
     }
 
 

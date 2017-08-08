@@ -26,7 +26,7 @@ public class SingleMouseMovement : MonoBehaviour
     private const float min_sensitivity = 0.2f;
     private const float max_sensitivity = 2.0f;
     private const float sensitivity_increment = 0.1f;
-    private const float speed_factor = 0.03f;   // Multiplied by sensitivity to get how far we move this frame
+    private const float speed_factor = 0.01f;   // Multiplied by sensitivity to get how far we move this frame
 
     private const float kick_force_multiplier = 2000f;//2000f
 
