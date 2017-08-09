@@ -1864,13 +1864,7 @@ MonoBehaviour:
 
     Commands in trials:
 
-    SPACEBAR to start trial (after players have joined)
-
-    ESCAPE to go back to this menu
-
-    M to toggle mouse visibility
-
-    ~ to turn on debug info'
+    SPACEBAR to start trial (after players have joined)'
 --- !u!222 &705703522
 CanvasRenderer:
   m_ObjectHideFlags: 0

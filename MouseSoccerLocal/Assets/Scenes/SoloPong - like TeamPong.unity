@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 216551294}
   - component: {fileID: 216551293}
   m_Layer: 5
-  m_Name: I felt very capable and effective when playing that last round.
+  m_Name: I felt capable and effective when playing that last round.
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -546,7 +546,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'I felt very capable and effective when playing that last round.
+  m_Text: 'I felt capable and effective when playing that last round.
 
 
     (press 1,2,3,4,5 on your keyboard)'
@@ -5850,6 +5850,16 @@ Prefab:
       propertyPath: reset_trail_colour_on_reset
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 96031759157586110, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 96031759157586110, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a8b8d04ff1ac8a4388784b9a3ff41fd, type: 2}
   m_IsPrefabParent: 0
@@ -6346,7 +6356,7 @@ GameObject:
   - component: {fileID: 1669150884}
   - component: {fileID: 1669150883}
   m_Layer: 5
-  m_Name: The movement of the paddle was responsive.
+  m_Name: During that last round, the movement of the paddle was responsive.
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6421,7 +6431,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'The movement of the paddle was responsive.
+  m_Text: 'During that last round, the movement of the paddle was responsive.
 
 
     (press 1,2,3,4,5 on your keyboard)'
@@ -9931,7 +9941,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'I was irritated during that last round.
+  m_Text: 'I was frustrated during that last round.
 
 
     (press 1,2,3,4,5 on your keyboard)'

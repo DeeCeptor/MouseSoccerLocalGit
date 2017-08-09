@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public IDevice input;
     public int player_id;
 
+    public bool show_player_label = true;
     Text player_label;
 
 
@@ -25,17 +26,21 @@ public class Player : MonoBehaviour
         ScoreManager.score_manager.AssignTeam(this.gameObject);
         ScoreManager.score_manager.SetPlayerColours(team, this.gameObject);
 
-        player_label = Instantiate((Resources.Load("Player Label") as GameObject)).GetComponent<Text>();
-        player_label.text = this.transform.name + "\n\n\n ";
-        player_label.transform.name = "Player " + this.transform.name + " label";
-        player_label.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
-        player_label.transform.localScale = Vector3.one;
+        if (show_player_label)
+        {
+            player_label = Instantiate((Resources.Load("Player Label") as GameObject)).GetComponent<Text>();
+            player_label.text = this.transform.name + "\n\n\n ";
+            player_label.transform.name = "Player " + this.transform.name + " label";
+            player_label.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+            player_label.transform.localScale = Vector3.one;
+        }
     }
 
 
     private void Update()
     {
         // Update position of UI label above player
-        player_label.transform.position = this.transform.position;
+        if (show_player_label)
+            player_label.transform.position = this.transform.position;
     }
 }

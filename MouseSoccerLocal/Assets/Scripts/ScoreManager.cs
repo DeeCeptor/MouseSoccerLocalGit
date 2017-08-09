@@ -134,18 +134,29 @@ public class ScoreManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             CmdReset();
         */
-        if (Input.GetKeyDown(KeyCode.M))
+
+        if (debug_view)
         {
-            Cursor.visible = !Cursor.visible;
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                Cursor.visible = !Cursor.visible;
+            }
+
+            // Fast forward
+            if (debug_view && Input.GetKeyDown(KeyCode.Tab))
+                Time.timeScale = 4.0f;
+            if (debug_view && Input.GetKeyUp(KeyCode.Tab))
+                Time.timeScale = 1.0f;
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Time.timeScale = 1.0f;
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+            }
         }
         if (Input.GetKeyDown(KeyCode.BackQuote))
             debug_view = !debug_view;
 
-        // Fast forward
-        if (debug_view && Input.GetKeyDown(KeyCode.Tab))
-            Time.timeScale = 4.0f;
-        if (debug_view && Input.GetKeyUp(KeyCode.Tab))
-            Time.timeScale = 1.0f;
 
         blue_score_text.text = "" + blue_score;
         red_score_text.text = "" + red_score;
@@ -155,10 +166,6 @@ public class ScoreManager : MonoBehaviour
         timer_text.text = "" + (int) time_remaining;
 
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 
     float deltaTime = 0.0f; // Used for non-fixed framerate

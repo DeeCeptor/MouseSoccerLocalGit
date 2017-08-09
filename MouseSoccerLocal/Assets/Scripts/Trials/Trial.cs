@@ -287,9 +287,10 @@ public class Trial : MonoBehaviour
         // Reset everything
         ResetTrial();
 
+        Debug.Log("Finished trial");
         round_running = false;
         trial_running = false;
-        Debug.Log("Finished trial");
+        Time.timeScale = 1.0f;
 
         if (to_menu_after_trial)
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
